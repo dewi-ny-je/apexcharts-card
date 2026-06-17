@@ -10,7 +10,7 @@ import {
   Statistics,
   StatisticValue,
 } from './types';
-import { compress, decompress, log } from './utils';
+import { averageValues, compress, decompress, log, sumValues } from './utils';
 import localForage from 'localforage';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { DateRange } from 'moment-range';
@@ -123,6 +123,21 @@ export default class GraphEntry {
     });
     if (index === -1) return null;
     return this.history[index][1];
+  }
+
+  // When `until` is provided (a timestamp in the same space as nowValue's
+  // argument), only points at or before that time are aggregated. This keeps
+  // sum/average from including future points of data_generator series.
+  public sumValue(until?: number): number | null {
+    if (!this.history || this.history.length === 0) return null;
+    const points = until === undefined ? this.history : this.history.filter((point) => point[0] <= until);
+    return sumValues(points.map((point) => point[1]));
+  }
+
+  public averageValue(until?: number): number | null {
+    if (!this.history || this.history.length === 0) return null;
+    const points = until === undefined ? this.history : this.history.filter((point) => point[0] <= until);
+    return averageValues(points.map((point) => point[1]));
   }
 
   get min(): number | undefined {

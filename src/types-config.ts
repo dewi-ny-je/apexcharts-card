@@ -117,9 +117,10 @@ export interface ActionsConfig {
 
 export interface ChartCardSeriesShowConfigExt {
   as_duration?: ChartCardPrettyTime;
-  in_legend?: boolean;
+  in_legend?: boolean | 'raw' | 'before_now' | 'after_now' | 'sum' | 'average';
   legend_value?: boolean;
-  in_header?: boolean | 'raw' | 'before_now' | 'after_now';
+  in_header?: boolean | 'raw' | 'before_now' | 'after_now' | 'sum' | 'average';
+  unit?: boolean | 'before_value';
   name_in_header?: boolean;
   null_in_header?: boolean;
   zero_in_header?: boolean;
