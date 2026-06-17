@@ -11,7 +11,16 @@ import {
   TIMESERIES_TYPES,
 } from './const';
 import { ChartCardConfig } from './types';
-import { computeName, computeUom, is12Hour, mergeDeep, myFormatNumber, prettyPrintTime } from './utils';
+import {
+  averageValues,
+  computeName,
+  computeUom,
+  is12Hour,
+  mergeDeep,
+  myFormatNumber,
+  prettyPrintTime,
+  sumValues,
+} from './utils';
 import { layoutMinimal } from './layouts/minimal';
 import { getLocales, getDefaultLocale } from './locales';
 import GraphEntry from './graphEntry';
@@ -399,29 +408,24 @@ function getLastValueBeforeNow(data: { x: number; y: number }[]): number | undef
   return lastVal;
 }
 
-function getSumValue(data: { x: number; y: number }[]): number | undefined {
+function getFirstValueAfterNow(data: { x: number; y: number }[]): number | undefined {
   const now = Date.now();
-  let sumVal: number | undefined = undefined;
   for (const pt of data) {
-    if (pt.y && pt.x <= now) {
-      sumVal = (sumVal ?? 0) + pt.y;
+    if (pt.x >= now) {
+      return pt.y;
     }
   }
-  return sumVal;
+  return undefined;
+}
+
+function getSumValue(data: { x: number; y: number }[]): number | undefined {
+  const now = Date.now();
+  return sumValues(data.filter((pt) => pt.x <= now).map((pt) => pt.y)) ?? undefined;
 }
 
 function getAverageValue(data: { x: number; y: number }[]): number | undefined {
-  if (data.length === 0) return undefined;
   const now = Date.now();
-  let sumVal = 0;
-  let itemCount = 0;
-  for (const pt of data) {
-    if (pt.y != null && pt.x <= now) {
-      sumVal += pt.y;
-      itemCount += 1;
-    }
-  }
-  return itemCount > 0 ? sumVal / itemCount : undefined;
+  return averageValues(data.filter((pt) => pt.x <= now).map((pt) => pt.y)) ?? undefined;
 }
 
 function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undefined) {
@@ -450,6 +454,8 @@ function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undef
           value = getSumValue(points);
         } else if (inLegend === 'average') {
           value = getAverageValue(points);
+        } else if (inLegend === 'after_now') {
+          value = getFirstValueAfterNow(points);
         } else {
           value = getLastValueBeforeNow(points);
         }

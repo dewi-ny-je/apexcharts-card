@@ -344,6 +344,33 @@ export function myFormatNumber(
   return formatNumber(fixedPrecisionValue, localeOptions);
 }
 
+// Shared aggregation helpers so the header (GraphEntry) and the legend
+// (apex-layouts) compute sums/averages identically. Zero values are included;
+// only null/undefined/NaN are skipped.
+export function sumValues(values: (number | null | undefined)[]): number | null {
+  let sum = 0;
+  let hasValidValue = false;
+  for (const value of values) {
+    if (typeof value === 'number' && !Number.isNaN(value)) {
+      sum += value;
+      hasValidValue = true;
+    }
+  }
+  return hasValidValue ? sum : null;
+}
+
+export function averageValues(values: (number | null | undefined)[]): number | null {
+  let sum = 0;
+  let itemCount = 0;
+  for (const value of values) {
+    if (typeof value === 'number' && !Number.isNaN(value)) {
+      sum += value;
+      itemCount += 1;
+    }
+  }
+  return itemCount > 0 ? sum / itemCount : null;
+}
+
 export function computeTimezoneDiffWithLocal(timezone: string | undefined): number {
   if (!timezone) return 0;
   return (moment().utcOffset() - moment().tz(timezone).utcOffset()) * 60 * 1000;

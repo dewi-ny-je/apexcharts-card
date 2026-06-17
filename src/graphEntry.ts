@@ -10,7 +10,7 @@ import {
   Statistics,
   StatisticValue,
 } from './types';
-import { compress, decompress, log } from './utils';
+import { averageValues, compress, decompress, log, sumValues } from './utils';
 import localForage from 'localforage';
 import { HassEntity } from 'home-assistant-js-websocket';
 import { DateRange } from 'moment-range';
@@ -127,30 +127,12 @@ export default class GraphEntry {
 
   public sumValue(): number | null {
     if (!this.history || this.history.length === 0) return null;
-    let sum = 0;
-    let hasValidValue = false;
-    for (const point of this.history) {
-      const value = point[1];
-      if (typeof value === 'number' && !isNaN(value)) {
-        sum += value;
-        hasValidValue = true;
-      }
-    }
-    return hasValidValue ? sum : null;
+    return sumValues(this.history.map((point) => point[1]));
   }
 
   public averageValue(): number | null {
     if (!this.history || this.history.length === 0) return null;
-    let sum = 0;
-    let itemCount = 0;
-    for (const point of this.history) {
-      const value = point[1];
-      if (typeof value === 'number' && !isNaN(value)) {
-        sum += value;
-        itemCount += 1;
-      }
-    }
-    return itemCount > 0 ? sum / itemCount : null;
+    return averageValues(this.history.map((point) => point[1]));
   }
 
   get min(): number | undefined {
