@@ -41,7 +41,7 @@ import {
   isUsingServerTimezone,
   computeTimezoneDiffWithLocal,
 } from './utils';
-import ApexCharts from 'apexcharts';
+import ApexCharts, { ApexOptions, ApexYAxis } from 'apexcharts';
 import { Ripple } from '@material/mwc-ripple';
 import { stylesApex } from './styles';
 import { HassEntity } from 'home-assistant-js-websocket';
@@ -793,8 +793,8 @@ class ChartsCard extends LitElement {
     if (isUsingServerTimezone(this._hass)) {
       this._serverTimeOffset = computeTimezoneDiffWithLocal(this._hass?.config.time_zone);
     }
-    const graph = this.shadowRoot?.querySelector('#graph');
-    const brush = this.shadowRoot?.querySelector('#brush');
+    const graph = this.shadowRoot?.querySelector<HTMLElement>('#graph');
+    const brush = this.shadowRoot?.querySelector<HTMLElement>('#brush');
     if (!this._apexChart && graph && this._config) {
       this._loaded = true;
       const layout = getLayoutConfig(this._config, this._hass, this._graphs);
@@ -802,14 +802,14 @@ class ChartsCard extends LitElement {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (layout as any).chart.id = Math.random().toString(36).substring(7);
       }
-      this._apexChart = new ApexCharts(graph, layout);
-      const promises: Promise<void>[] = [];
+      this._apexChart = new ApexCharts(graph, layout as ApexOptions);
+      const promises: Promise<ApexCharts>[] = [];
       promises.push(this._apexChart.render());
       if (this._config.series_in_brush.length && brush) {
         this._apexBrush = new ApexCharts(
           brush,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          getBrushLayoutConfig(this._config, this._hass, (layout as any).chart.id),
+          getBrushLayoutConfig(this._config, this._hass, (layout as any).chart.id) as ApexOptions,
         );
         promises.push(this._apexBrush.render());
       }
@@ -995,7 +995,7 @@ class ChartsCard extends LitElement {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const currentMax = (this._apexChart as any).axes?.w?.globals?.maxX;
       this._headerState = [...this._headerState];
-      const chartUpdates: Promise<void>[] = [];
+      const chartUpdates: Promise<ApexCharts>[] = [];
       chartUpdates.push(
         this._apexChart?.updateOptions(
           graphData,
