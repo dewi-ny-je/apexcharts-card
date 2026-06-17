@@ -1,3 +1,9 @@
+## [2.4.0](https://github.com/dewi-ny-je/apexcharts-card/compare/v2.3.0...v2.4.0) (2026-06-17)
+
+### Features
+
+* upgrade bundled ApexCharts to 5.15 ([212ddaa](https://github.com/dewi-ny-je/apexcharts-card/commit/212ddaa9642af96abcabae9f5a835ce56bc53213)), closes [#2](https://github.com/dewi-ny-je/apexcharts-card/issues/2)
+
 ## [2.3.0](https://github.com/dewi-ny-je/apexcharts-card/compare/v2.2.3...v2.3.0) (2026-06-17)
 
 ### Features
