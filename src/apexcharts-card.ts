@@ -61,6 +61,7 @@ import {
   DEFAULT_FLOAT_PRECISION,
   DEFAULT_SHOW_IN_CHART,
   DEFAULT_SHOW_IN_HEADER,
+  DEFAULT_SHOW_UNIT,
   DEFAULT_SHOW_IN_LEGEND,
   DEFAULT_SHOW_LEGEND_VALUE,
   DEFAULT_SHOW_NAME_IN_HEADER,
@@ -405,6 +406,7 @@ class ChartsCard extends LitElement {
               in_legend: DEFAULT_SHOW_IN_LEGEND,
               legend_value: DEFAULT_SHOW_LEGEND_VALUE,
               in_header: DEFAULT_SHOW_IN_HEADER,
+              unit: DEFAULT_SHOW_UNIT,
               in_chart: DEFAULT_SHOW_IN_CHART,
               name_in_header: DEFAULT_SHOW_NAME_IN_HEADER,
               null_in_header: DEFAULT_SHOW_NULL_IN_HEADER,
@@ -422,6 +424,7 @@ class ChartsCard extends LitElement {
                   ? false
                   : DEFAULT_SHOW_IN_HEADER
                 : serie.show.in_header;
+            serie.show.unit = serie.show.unit === undefined ? DEFAULT_SHOW_UNIT : serie.show.unit;
             serie.show.name_in_header =
               serie.show.name_in_header === undefined ? DEFAULT_SHOW_NAME_IN_HEADER : serie.show.name_in_header;
             serie.show.null_in_header =
@@ -742,6 +745,9 @@ class ChartsCard extends LitElement {
                 }}"
               >
                 <div id="state__value">
+                  ${serie.show.unit === 'before_value'
+                    ? html`<span id="uom">${computeUom(index, this._config?.series, this._entities)}</span>`
+                    : ''}
                   <span id="state" style="${this._computeHeaderStateColor(serie, this._headerState?.[index])}"
                     >${this._headerState?.[index] === 0
                       ? 0
@@ -749,7 +755,7 @@ class ChartsCard extends LitElement {
                       ? prettyPrintTime(this._headerState?.[index], serie.show.as_duration)
                       : this._computeLastState(this._headerState?.[index], index) || NO_VALUE}</span
                   >
-                  ${!serie.show.as_duration
+                  ${!serie.show.as_duration && serie.show.unit !== false && serie.show.unit !== 'before_value'
                     ? html`<span id="uom">${computeUom(index, this._config?.series, this._entities)}</span>`
                     : ''}
                 </div>
@@ -845,6 +851,10 @@ class ChartsCard extends LitElement {
                 now.getTime() + (this._seriesOffset[index] ? this._seriesOffset[index] : 0),
                 inHeader === 'before_now',
               );
+            } else if (inHeader === 'sum') {
+              this._headerState[index] = graph.sumValue();
+            } else if (inHeader === 'average') {
+              this._headerState[index] = graph.averageValue();
             } else {
               // not raw
               this._headerState[index] = graph.lastState;
@@ -1118,6 +1128,7 @@ class ChartsCard extends LitElement {
   ) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const points: any = [];
+    const stacked = this._config?.stacked;
     const multiYAxis =
       this._config?.apex_config?.yaxis &&
       Array.isArray(this._config.apex_config.yaxis) &&
@@ -1125,7 +1136,8 @@ class ChartsCard extends LitElement {
     points.push({
       x: offset ? value[0] - offset : value[0],
       y: invert && value[1] ? -value[1] : value[1],
-      seriesIndex: index,
+      // on stacked charts the y value is an absolute position, not tied to a single series
+      ...(stacked ? {} : { seriesIndex: index }),
       yAxisIndex: multiYAxis ? index : 0,
       marker: {
         strokeColor: bgColor,
@@ -1156,7 +1168,7 @@ class ChartsCard extends LitElement {
       points.push({
         x: offset ? value[0] - offset : value[0],
         y: invert && value[1] ? -value[1] : value[1],
-        seriesIndex: index,
+        ...(stacked ? {} : { seriesIndex: index }),
         yAxisIndex: multiYAxis ? index : 0,
         marker: {
           size: 0,
@@ -1238,8 +1250,13 @@ class ChartsCard extends LitElement {
           }
           if (max === undefined || max === null) {
             max = elt.max[1];
-          } else if (elt.max[1] !== null && max < elt.max[1]) {
-            max = elt.max[1];
+          } else if (elt.max[1] !== null) {
+            if (this._config?.stacked) {
+              // stacked charts add up, so the axis must fit the sum of the maxima
+              max += elt.max[1];
+            } else if (max < elt.max[1]) {
+              max = elt.max[1];
+            }
           }
         });
         if (yaxis.align_to !== undefined) {

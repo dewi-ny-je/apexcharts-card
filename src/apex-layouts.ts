@@ -385,6 +385,45 @@ function getPlotOptions_radialBar(config: ChartCardConfig, hass: HomeAssistant |
   }
 }
 
+// note: the series have already been shifted so no need to apply a 2nd offset
+function getLastValueBeforeNow(data: { x: number; y: number }[]): number | undefined {
+  const now = Date.now();
+  let lastVal: number | undefined = undefined;
+  for (const pt of data) {
+    if (pt.x < now) {
+      lastVal = pt.y;
+    } else {
+      break;
+    }
+  }
+  return lastVal;
+}
+
+function getSumValue(data: { x: number; y: number }[]): number | undefined {
+  const now = Date.now();
+  let sumVal: number | undefined = undefined;
+  for (const pt of data) {
+    if (pt.y && pt.x <= now) {
+      sumVal = (sumVal ?? 0) + pt.y;
+    }
+  }
+  return sumVal;
+}
+
+function getAverageValue(data: { x: number; y: number }[]): number | undefined {
+  if (data.length === 0) return undefined;
+  const now = Date.now();
+  let sumVal = 0;
+  let itemCount = 0;
+  for (const pt of data) {
+    if (pt.y != null && pt.x <= now) {
+      sumVal += pt.y;
+      itemCount += 1;
+    }
+  }
+  return itemCount > 0 ? sumVal / itemCount : undefined;
+}
+
 function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undefined) {
   return function (_, opts, conf = config, hass2 = hass) {
     const name = computeName(
@@ -399,9 +438,22 @@ function getLegendFormatter(config: ChartCardConfig, hass: HomeAssistant | undef
     if (!conf.series_in_graph[opts.seriesIndex].show.legend_value) {
       return [name];
     } else {
+      const inLegend = conf.series_in_graph[opts.seriesIndex].show.in_legend;
       let value = TIMESERIES_TYPES.includes(config.chart_type)
         ? opts.w.globals.series[opts.seriesIndex].slice(-1)[0]
         : opts.w.globals.series[opts.seriesIndex];
+      if (inLegend === 'before_now' || inLegend === 'after_now' || inLegend === 'sum' || inLegend === 'average') {
+        const xs = opts.w.globals.seriesX[opts.seriesIndex]; // X values
+        const ys = opts.w.globals.series[opts.seriesIndex]; // Y values
+        const points: { x: number; y: number }[] = xs.map((xVal: number, i: number) => ({ x: xVal, y: ys[i] }));
+        if (inLegend === 'sum') {
+          value = getSumValue(points);
+        } else if (inLegend === 'average') {
+          value = getAverageValue(points);
+        } else {
+          value = getLastValueBeforeNow(points);
+        }
+      }
       if (conf.series_in_graph[opts.seriesIndex]?.invert && value) {
         value = -value;
       }
