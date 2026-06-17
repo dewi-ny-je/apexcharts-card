@@ -845,16 +845,15 @@ class ChartsCard extends LitElement {
           if (!graph) return [];
           const inHeader = this._config?.series[index].show.in_header;
           if (inHeader && inHeader !== 'raw') {
+            const nowWithOffset = now.getTime() + (this._seriesOffset[index] ? this._seriesOffset[index] : 0);
             if (inHeader === 'after_now' || inHeader === 'before_now') {
               // before_now / after_now
-              this._headerState[index] = graph.nowValue(
-                now.getTime() + (this._seriesOffset[index] ? this._seriesOffset[index] : 0),
-                inHeader === 'before_now',
-              );
+              this._headerState[index] = graph.nowValue(nowWithOffset, inHeader === 'before_now');
             } else if (inHeader === 'sum') {
-              this._headerState[index] = graph.sumValue();
+              // only aggregate up to now so future (data_generator) points are excluded
+              this._headerState[index] = graph.sumValue(nowWithOffset);
             } else if (inHeader === 'average') {
-              this._headerState[index] = graph.averageValue();
+              this._headerState[index] = graph.averageValue(nowWithOffset);
             } else {
               // not raw
               this._headerState[index] = graph.lastState;
