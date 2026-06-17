@@ -1,3 +1,14 @@
+## [2.3.0](https://github.com/dewi-ny-je/apexcharts-card/compare/v2.2.3...v2.3.0) (2026-06-17)
+
+### Features
+
+* Port improvements from the vingerha fork ([b58ad32](https://github.com/dewi-ny-je/apexcharts-card/commit/b58ad323d7c6bf20f0ea13790dfbcc20f3cf3629))
+
+### Bug Fixes
+
+* Address code review on ported aggregations ([22b4223](https://github.com/dewi-ny-je/apexcharts-card/commit/22b42233ff09af5bee22815d567df9cceea699fc))
+* Bound header sum/average aggregations to the current time ([5acb386](https://github.com/dewi-ny-je/apexcharts-card/commit/5acb386b94a3509880d58b28d50eeba6b6e3586c))
+
 ## [2.2.3](https://github.com/RomRider/apexcharts-card/compare/v2.2.2...v2.2.3) (2025-08-21)
 
 ### Bug Fixes
