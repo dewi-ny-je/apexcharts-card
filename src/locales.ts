@@ -95,11 +95,14 @@ export function getLocales(): Record<string, unknown> {
     vi: vi,
     'zh-cn': zh_cn,
     'zh-tw': zh_tw,
-    // Backward-compatible aliases for locale codes used before
-    // ApexCharts renamed them to their standard ISO equivalents.
-    rs: sr,
-    se: sv,
-    ua: uk,
+    // Backward-compatible aliases for locale codes used before ApexCharts
+    // renamed them to their standard ISO equivalents. The cloned object must
+    // keep the old `name`, because getLayoutConfig() passes the requested code
+    // through as `chart.defaultLocale`, and ApexCharts matches it against the
+    // locale object's `name` (throwing "Wrong locale name provided" on a miss).
+    rs: { ...sr, name: 'rs' },
+    se: { ...sv, name: 'se' },
+    ua: { ...uk, name: 'ua' },
   };
 }
 
