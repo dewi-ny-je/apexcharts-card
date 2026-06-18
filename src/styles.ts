@@ -295,76 +295,25 @@ export const stylesApex: CSSResultGroup = css`
     margin-top: -6px;
   }
 
+  /* ApexCharts >= 5.x renders the tooltip series marker as an inline SVG.
+     Size it to fill the marker box and let it inherit the series color via
+     the SVG's fill="currentColor" (the marker span carries an inline color). */
   .apexcharts-tooltip-marker {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
-    width: 16px;
-    height: 16px;
-    font-size: 16px;
-    line-height: 16px;
-    margin-right: 4px;
-    text-align: center;
+    width: 12px;
+    height: 12px;
+    margin-right: 6px;
     vertical-align: middle;
     color: inherit;
   }
 
-  .apexcharts-tooltip-marker::before {
-    content: '';
-    display: inline-block;
+  .apexcharts-tooltip-marker > svg {
     width: 100%;
-    text-align: center;
-    color: currentcolor;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    font-size: 26px;
-    font-family: Arial, Helvetica, sans-serif;
-    line-height: 14px;
-    font-weight: 900;
-  }
-
-  .apexcharts-tooltip-marker[shape='circle']::before {
-    content: '\\25CF';
-  }
-
-  .apexcharts-tooltip-marker[shape='square']::before,
-  .apexcharts-tooltip-marker[shape='rect']::before {
-    content: '\\25A0';
-    transform: translate(-1px, -2px);
-  }
-
-  .apexcharts-tooltip-marker[shape='line']::before {
-    content: '\\2500';
-  }
-
-  .apexcharts-tooltip-marker[shape='diamond']::before {
-    content: '\\25C6';
-    font-size: 28px;
-  }
-
-  .apexcharts-tooltip-marker[shape='triangle']::before {
-    content: '\\25B2';
-    font-size: 22px;
-  }
-
-  .apexcharts-tooltip-marker[shape='cross']::before {
-    content: '\\2715';
-    font-size: 18px;
-  }
-
-  .apexcharts-tooltip-marker[shape='plus']::before {
-    content: '\\2715';
-    transform: rotate(45deg) translate(-1px, -1px);
-    font-size: 18px;
-  }
-
-  .apexcharts-tooltip-marker[shape='star']::before {
-    content: '\\2605';
-    font-size: 18px;
-  }
-
-  .apexcharts-tooltip-marker[shape='sparkle']::before {
-    content: '\\2726';
-    font-size: 20px;
+    height: 100%;
+    display: block;
   }
 
   .apexcharts-tooltip-series-group {
