@@ -1,3 +1,9 @@
+## [2.4.1](https://github.com/dewi-ny-je/apexcharts-card/compare/v2.4.0...v2.4.1) (2026-06-18)
+
+### Bug Fixes
+
+* keep original name on backward-compatible locale aliases ([2b73e2c](https://github.com/dewi-ny-je/apexcharts-card/commit/2b73e2ca2f2b0565c7a68cbba850573f039fe983))
+
 ## [2.4.0](https://github.com/dewi-ny-je/apexcharts-card/compare/v2.3.0...v2.4.0) (2026-06-17)
 
 ### Features
