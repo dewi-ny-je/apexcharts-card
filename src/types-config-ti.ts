@@ -44,6 +44,7 @@ export const ChartCardExternalConfig = t.iface([], {
   "view_layout": t.opt("any"),
   "visibility": t.opt("any"),
   "grid_options": t.opt("any"),
+  "disabled": t.opt("boolean"),
   "index": t.opt("number"),
   "view_index": t.opt("number"),
   "brush": t.opt("ChartCardBrushExtConfig"),
