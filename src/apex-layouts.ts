@@ -550,15 +550,34 @@ function getFillType(config: ChartCardConfig, brush: boolean) {
   }
 }
 
+// Matches strings that are clearly a JavaScript function definition, either a
+// `function (...) {...}` declaration/expression or an arrow function. These are
+// auto-evaluated so that ApexCharts options expecting a callback (e.g.
+// `plotOptions.bar.dataLabels.total.formatter`) don't receive a bare string,
+// which would crash ApexCharts with "<x> is not a function".
+const FUNCTION_LIKE_REGEX = /^(async\s+)?(function\b[^(]*\(|(\([^)]*\)|[A-Za-z_$][\w$]*)\s*=>)/;
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function evalApexConfig(apexConfig: any): any {
   const eval2 = eval;
   Object.keys(apexConfig).forEach((key) => {
-    if (typeof apexConfig[key] === 'string' && apexConfig[key].trim().startsWith('EVAL:')) {
-      apexConfig[key] = eval2(`(${apexConfig[key].trim().slice(5)})`);
-    }
-    if (typeof apexConfig[key] === 'object') {
-      apexConfig[key] = evalApexConfig(apexConfig[key]);
+    const value = apexConfig[key];
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (trimmed.startsWith('EVAL:')) {
+        apexConfig[key] = eval2(`(${trimmed.slice(5)})`);
+      } else if (FUNCTION_LIKE_REGEX.test(trimmed)) {
+        // Allow function strings without the explicit `EVAL:` prefix. If the
+        // string turns out not to be valid JS, keep it untouched rather than
+        // throwing.
+        try {
+          apexConfig[key] = eval2(`(${trimmed})`);
+        } catch {
+          // leave the original string as-is
+        }
+      }
+    } else if (value !== null && typeof value === 'object') {
+      apexConfig[key] = evalApexConfig(value);
     }
   });
   return apexConfig;

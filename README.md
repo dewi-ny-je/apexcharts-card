@@ -637,6 +637,23 @@ apex_config:
         }
 ```
 
+Strings that are clearly a function definition (a `function (...) {...}` expression
+or an arrow function) are also detected and evaluated automatically, even without
+the `EVAL:` prefix, so the following works too:
+
+```yaml
+apex_config:
+  plotOptions:
+    bar:
+      dataLabels:
+        total:
+          enabled: true
+          formatter: |
+            function(value) {
+              return value.toFixed(1) + "h";
+            }
+```
+
 ### Sections Views
 
 When the card is used in a Home Assistant sections view, `section_mode: true` should be set to align with the grid provided by the sections view. If not, then the card will not align with the grid.
