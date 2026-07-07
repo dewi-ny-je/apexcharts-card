@@ -45,6 +45,7 @@ export interface ChartCardExternalConfig {
   visibility?: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   grid_options?: any;
+  disabled?: boolean;
   index?: number;
   view_index?: number;
   brush?: ChartCardBrushExtConfig;
