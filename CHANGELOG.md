@@ -1,3 +1,9 @@
+## [2.4.2](https://github.com/dewi-ny-je/apexcharts-card/compare/v2.4.1...v2.4.2) (2026-07-07)
+
+### Bug Fixes
+
+* Add optional 'uix' property to types configuration to allow `uix` as well as `card_mod` config objects ([a4b1e15](https://github.com/dewi-ny-je/apexcharts-card/commit/a4b1e1562514dedf985be533774725003104d0ee))
+
 ## [2.4.1](https://github.com/dewi-ny-je/apexcharts-card/compare/v2.4.0...v2.4.1) (2026-06-18)
 
 ### Bug Fixes
