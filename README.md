@@ -1,14 +1,15 @@
-[![License](https://img.shields.io/github/license/RomRider/apexcharts-card.svg)](LICENSE)
+[![License](https://img.shields.io/github/license/dewi-ny-je/apexcharts-card.svg)](LICENSE)
 [![HACS Supported](https://img.shields.io/badge/HACS-Supported-green.svg)](https://github.com/custom-components/hacs)
-![Downloads](https://img.shields.io/github/downloads/RomRider/apexcharts-card/total)
-![GitHub Activity](https://img.shields.io/github/commit-activity/y/RomRider/apexcharts-card.svg?label=commits)
-[![Stable](https://img.shields.io/github/release/RomRider/apexcharts-card.svg)](https://github.com/RomRider/apexcharts-card/releases/latest)
-[![Beta](https://img.shields.io/github/package-json/v/RomRider/apexcharts-card/dev?label=release%40dev)](https://github.com/RomRider/apexcharts-card/releases)
+![Downloads](https://img.shields.io/github/downloads/dewi-ny-je/apexcharts-card/total)
+![GitHub Activity](https://img.shields.io/github/commit-activity/y/dewi-ny-je/apexcharts-card.svg?label=commits)
+[![Stable](https://img.shields.io/github/release/dewi-ny-je/apexcharts-card.svg)](https://github.com/dewi-ny-je/apexcharts-card/releases/latest)
 [![Community Forum](https://img.shields.io/badge/community-forum-brightgreen.svg)](https://community.home-assistant.io/t/apexcharts-card-a-highly-customizable-graph-card/272877)
 
 # ApexCharts Card by [@RomRider](https://github.com/RomRider) <!-- omit in toc -->
 
-![Header](https://github.com/RomRider/apexcharts-card/raw/master/docs/Header.png)
+Further maintained by [@dewi-ny-je](https://github.com/dewi-ny-je)
+
+![Header](https://github.com/dewi-ny-je/apexcharts-card/raw/master/docs/Header.png)
 
 This is a highly customizable graph card for [Home-Assistant](https://www.home-assistant.io)'s Lovelace UI.<br/>
 
@@ -78,7 +79,7 @@ This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community St
 
 ### Manual install
 
-1. Download and copy `apexcharts-card.js` from the [latest release](https://github.com/RomRider/apexcharts-card/releases/latest) into your `config/www` directory.
+1. Download and copy `apexcharts-card.js` from the [latest release](https://github.com/dewi-ny-je/apexcharts-card/releases/latest) into your `config/www` directory.
 
 2. Add the resource reference as described below.
 
@@ -89,7 +90,7 @@ This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community St
 2. Grab `apexcharts-card.js`:
 
 ```
-$ wget https://github.com/RomRider/apexcharts-card/releases/download/v2.4.2/apexcharts-card.js
+$ wget https://github.com/dewi-ny-je/apexcharts-card/releases/download/v2.4.2/apexcharts-card.js
 ```
 
 3. Add the resource reference as described below.
