@@ -1,3 +1,9 @@
+## [2.4.3](https://github.com/dewi-ny-je/apexcharts-card/compare/v2.4.2...v2.4.3) (2026-08-06)
+
+### Bug Fixes
+
+* drop unmaintained custom-card-helpers, vendor the HA helpers ([dcbf43b](https://github.com/dewi-ny-je/apexcharts-card/commit/dcbf43b238c82e572d6d494351c2b0332c2f55d8))
+
 ## [2.4.2](https://github.com/dewi-ny-je/apexcharts-card/compare/v2.4.1...v2.4.2) (2026-07-07)
 
 ### Bug Fixes
