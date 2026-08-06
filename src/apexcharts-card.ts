@@ -12,7 +12,8 @@ import {
   HistoryPoint,
   minmax_type,
 } from './types';
-import { handleAction, HomeAssistant } from 'custom-card-helpers';
+import { handleAction } from './handle-action';
+import { HomeAssistant, TimeZone } from './types-ha';
 import localForage from 'localforage';
 import * as pjson from '../package.json';
 import {
@@ -86,7 +87,6 @@ import {
 import parse from 'parse-duration';
 import tinycolor from '@ctrl/tinycolor';
 import { actionHandler } from './action-handler-directive';
-import { OverrideFrontendLocaleData } from './types-ha';
 
 /* eslint no-console: 0 */
 console.info(
@@ -1511,7 +1511,7 @@ class ChartsCard extends LitElement {
     let end = new Date();
     let start = new Date(end.getTime() - this._graphSpan + 1);
     const curMoment = moment();
-    if ((this._hass?.locale as OverrideFrontendLocaleData).time_zone === 'server') {
+    if (this._hass?.locale.time_zone === TimeZone.server) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       curMoment.tz(this._hass!.config.time_zone);
     }

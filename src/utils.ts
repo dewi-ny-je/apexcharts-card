@@ -5,8 +5,8 @@ import { TinyColor } from '@ctrl/tinycolor';
 import parse from 'parse-duration';
 import { ChartCardExternalConfig, ChartCardPrettyTime, ChartCardSeriesExternalConfig } from './types-config';
 import { DEFAULT_FLOAT_PRECISION, DEFAULT_MAX, DEFAULT_MIN, moment, NO_VALUE } from './const';
-import { formatNumber, FrontendLocaleData, HomeAssistant } from 'custom-card-helpers';
-import { OverrideFrontendLocaleData } from './types-ha';
+import { formatNumber } from './format-number';
+import { FrontendLocaleData, HomeAssistant, TimeZone } from './types-ha';
 
 export function compress(data: unknown): string {
   return lzStringCompress(JSON.stringify(data));
@@ -166,12 +166,7 @@ export function getLovelace(): any | null {
   root = root && root.querySelector('ha-panel-lovelace');
   root = root && root.shadowRoot;
   root = root && root.querySelector('hui-root');
-  if (root) {
-    const ll = root.lovelace;
-    ll.current_view = root.___curView;
-    return ll;
-  }
-  return null;
+  return (root && root.lovelace) || null;
 }
 
 export function interpolateColor(a: string, b: string, factor: number): string {
@@ -377,5 +372,5 @@ export function computeTimezoneDiffWithLocal(timezone: string | undefined): numb
 }
 
 export function isUsingServerTimezone(/*config: ChartCardConfig, */ hass: HomeAssistant | undefined): boolean {
-  return (hass?.locale as OverrideFrontendLocaleData).time_zone === 'server';
+  return hass?.locale.time_zone === TimeZone.server;
 }
