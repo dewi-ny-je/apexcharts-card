@@ -1,4 +1,4 @@
-import { HomeAssistant } from 'custom-card-helpers';
+import { HomeAssistant } from './types-ha';
 import parse from 'parse-duration';
 import {
   DEFAULT_AREA_OPACITY,

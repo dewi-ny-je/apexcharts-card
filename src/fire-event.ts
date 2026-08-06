@@ -28,9 +28,25 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import { HapticType } from './types-config';
+
 declare global {
-  // eslint-disable-next-line
-  interface HASSDomEvents {}
+  // The events this card fires. They used to be declared by `custom-card-helpers`
+  // as a side effect of importing it.
+  interface HASSDomEvents {
+    action: {
+      action: string;
+    };
+    'hass-more-info': {
+      entityId: string | undefined;
+    };
+    'location-changed': {
+      replace: boolean;
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    'll-custom': any;
+    haptic: HapticType;
+  }
 }
 
 export type ValidHassDomEvent = keyof HASSDomEvents;
