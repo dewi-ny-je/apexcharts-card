@@ -20,7 +20,7 @@ A clear and concise description of what the bug is.
 Version:
 
 **To Reproduce**
-This is the configuration I used:
+This is the configuration I used (paste the YAML configuration):
 ```yaml
 
 ```
@@ -41,5 +41,8 @@ A clear and concise description of what you expected to happen.
  - Browser [e.g. stock browser, safari]
  - Version [e.g. 22]
 
-**Additional context**
-Add any other context about the problem here.
+**"Homework first" approach**
+Go to the best LLM you have access to (Gemini Pro is free, otherwise Claude Opus, GPT 5+/Thinking, …) and ask the following question: 
+> I have the following issue when running https://github.com/dewi-ny-je/apexcharts-card : (describe the issue as best as you can, and provide logs/error messages if applicable), can you find the cause of the issue and potential solutions? My configuration is the following: (paste your YAML)
+
+Then paste here the answer of the LLM. Missing this step will likely result in your issue being ignored.
