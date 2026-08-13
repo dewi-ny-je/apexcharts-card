@@ -555,8 +555,10 @@ function evalApexConfig(apexConfig: any, hass: HomeAssistant | undefined): any {
   Object.keys(apexConfig).forEach((key) => {
     if (typeof apexConfig[key] === 'string' && apexConfig[key].trim().startsWith('EVAL:')) {
       const code = apexConfig[key].trim().slice(5);
-      // `hass` is passed as a named argument so the returned function
-      // closes over it — indirect eval can't do this, it only sees globals.
+      // Evaluate `code` with `hass` provided as an explicit argument so it can be
+      // referenced inside `code`. This is a one-time evaluation; `apexConfig[key]`
+      // becomes the resulting value, not a reusable function. Indirect eval can't
+      // do this, it only sees globals.
       apexConfig[key] = new Function('hass', `return (${code});`)(hass);
     }
     if (typeof apexConfig[key] === 'object' && apexConfig[key] !== null) {
