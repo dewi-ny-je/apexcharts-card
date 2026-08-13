@@ -797,7 +797,7 @@ class ChartsCard extends LitElement {
     const brush = this.shadowRoot?.querySelector<HTMLElement>('#brush');
     if (!this._apexChart && graph && this._config) {
       this._loaded = true;
-      const layout = getLayoutConfig(this._config, this._hass, this._graphs);
+      const layout = getLayoutConfig(this._config, () => this._hass, this._graphs);
       if (this._config.series_in_brush.length) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (layout as any).chart.id = Math.random().toString(36).substring(7);
@@ -809,7 +809,7 @@ class ChartsCard extends LitElement {
         this._apexBrush = new ApexCharts(
           brush,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          getBrushLayoutConfig(this._config, this._hass, (layout as any).chart.id) as ApexOptions,
+          getBrushLayoutConfig(this._config, () => this._hass, (layout as any).chart.id) as ApexOptions,
         );
         promises.push(this._apexBrush.render());
       }

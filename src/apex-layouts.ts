@@ -27,9 +27,10 @@ import GraphEntry from './graphEntry';
 
 export function getLayoutConfig(
   config: ChartCardConfig,
-  hass: HomeAssistant | undefined = undefined,
+  getHass: () => HomeAssistant | undefined = () => undefined,
   graphs: (GraphEntry | undefined)[] | undefined,
 ): unknown {
+  const hass = getHass();
   const locales = getLocales();
   const def = {
     chart: {
@@ -112,15 +113,16 @@ export function getLayoutConfig(
   }
 
   return config.apex_config
-    ? mergeDeep(mergeDeep(def, conf), evalApexConfig(config.apex_config))
+    ? mergeDeep(mergeDeep(def, conf), evalApexConfig(config.apex_config, getHass))
     : mergeDeep(def, conf);
 }
 
 export function getBrushLayoutConfig(
   config: ChartCardConfig,
-  hass: HomeAssistant | undefined = undefined,
+  getHass: () => HomeAssistant | undefined = () => undefined,
   id: string,
 ): unknown {
+  const hass = getHass();
   const locales = getLocales();
   const def = {
     chart: {
@@ -185,7 +187,7 @@ export function getBrushLayoutConfig(
       text: 'Loading...',
     },
   };
-  return config.brush?.apex_config ? mergeDeep(def, evalApexConfig(config.brush.apex_config)) : def;
+  return config.brush?.apex_config ? mergeDeep(def, evalApexConfig(config.brush.apex_config, getHass)) : def;
 }
 
 function getFillOpacity(config: ChartCardConfig, brush: boolean): number[] {
@@ -550,15 +552,35 @@ function getFillType(config: ChartCardConfig, brush: boolean) {
   }
 }
 
+/*
+ * Evaluates every `EVAL:` string found in `apexConfig`, exposing `hass` to the evaluated code
+ * the same way `transform` and `data_generator` do.
+ *
+ * `apexConfig` is mutated in place and this only ever runs once per card (from `getLayoutConfig`,
+ * called by `_initialLoad`), so `hass` must not be captured by value: an `EVAL:` returning a
+ * function is kept by ApexCharts and called on every render, long after the `hass` object present
+ * at evaluation time has been replaced by Home Assistant. Such functions are therefore wrapped so
+ * that `hass` is resolved through `getHass()` on each call. An `EVAL:` returning anything else is
+ * a plain value and stays a one-time evaluation.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function evalApexConfig(apexConfig: any): any {
-  const eval2 = eval;
+function evalApexConfig(apexConfig: any, getHass: () => HomeAssistant | undefined): any {
   Object.keys(apexConfig).forEach((key) => {
     if (typeof apexConfig[key] === 'string' && apexConfig[key].trim().startsWith('EVAL:')) {
-      apexConfig[key] = eval2(`(${apexConfig[key].trim().slice(5)})`);
+      // No `'use strict'` here: the code used to run through an indirect `eval`, and sloppy mode
+      // is kept so that existing snippets don't start throwing.
+      const evaluate = new Function('hass', `return (${apexConfig[key].trim().slice(5)});`);
+      const evaluated = evaluate(getHass());
+      apexConfig[key] =
+        typeof evaluated === 'function'
+          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            function (this: unknown, ...args: any[]) {
+              return evaluate(getHass()).apply(this, args);
+            }
+          : evaluated;
     }
-    if (typeof apexConfig[key] === 'object') {
-      apexConfig[key] = evalApexConfig(apexConfig[key]);
+    if (typeof apexConfig[key] === 'object' && apexConfig[key] !== null) {
+      apexConfig[key] = evalApexConfig(apexConfig[key], getHass);
     }
   });
   return apexConfig;

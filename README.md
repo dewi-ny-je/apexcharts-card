@@ -638,6 +638,36 @@ apex_config:
         }
 ```
 
+#### Accessing Home Assistant states from `EVAL:`
+
+The `hass` object is available inside `EVAL:` code, like it is in [`transform`](#transform-option) and [`data_generator`](#data_generator-option), so you can read any entity without going through the DOM:
+
+```yaml
+apex_config:
+  yaxis:
+    labels:
+      formatter: |
+        EVAL:function(value) {
+          const daylight = parseFloat(hass.states['sensor.home_sun_daylight'].state);
+          return (100 * value / daylight).toFixed(0) + "%";
+        }
+```
+
+Two things to keep in mind:
+
+* When your `EVAL:` returns a **function** (formatters, custom tooltips, ...), `hass` is read every time the function is called, so it always sees the current states.
+* When your `EVAL:` returns a **value** (a number, a string, an array, ...), it is evaluated only once, when the chart is created. The value will not follow later state changes.
+
+:warning: Reading an entity in an `EVAL:` does **not** make the card refresh when that entity changes: the card only refreshes when one of the entities listed in `series` changes, or on `update_interval`. If you need the chart to follow an entity which isn't plotted, add it as a hidden series — it will then trigger refreshes without being drawn or affecting the y-axis:
+
+```yaml
+series:
+  - entity: sensor.home_sun_daylight
+    show:
+      in_chart: false
+      in_header: false
+```
+
 ### Sections Views
 
 When the card is used in a Home Assistant sections view, `section_mode: true` should be set to align with the grid provided by the sections view. If not, then the card will not align with the grid.
