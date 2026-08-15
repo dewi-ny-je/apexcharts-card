@@ -985,15 +985,13 @@ class ChartsCard extends LitElement {
         }
       }
       // graphData.tooltip = { marker: { fillColors: ['#ff0000', '#00ff00'] } };
-      const brushIsAtEnd =
-        this._apexBrush &&
-        this._brushInit &&
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (this._apexChart as any).axes?.w?.globals?.maxX === (this._apexBrush as any).axes?.w?.globals?.maxX;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const currentMin = (this._apexChart as any).axes?.w?.globals?.minX;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const currentMax = (this._apexChart as any).axes?.w?.globals?.maxX;
+      // `getState()` is ApexCharts' public, typed snapshot of the rendered
+      // chart; it replaces the reads of the internal `axes.w.globals` object
+      // the card used to reach into.
+      const graphState = this._apexChart.getState();
+      const brushIsAtEnd = this._apexBrush && this._brushInit && graphState.maxX === this._apexBrush.getState().maxX;
+      const currentMin = graphState.minX;
+      const currentMax = graphState.maxX;
       this._headerState = [...this._headerState];
       const chartUpdates: Promise<ApexCharts>[] = [];
       chartUpdates.push(
