@@ -1,3 +1,12 @@
+## [2.5.0](https://github.com/dewi-ny-je/apexcharts-card/compare/v2.4.3...v2.5.0) (2026-08-15)
+
+### Features
+
+* expose hass to EVAL: functions in apex_config ([ea672b1](https://github.com/dewi-ny-je/apexcharts-card/commit/ea672b1566efd188eef6a5df4b9c43ac49ed1a87))
+* expose hass to EVAL: functions in apex_config ([68ef04a](https://github.com/dewi-ny-je/apexcharts-card/commit/68ef04adbc9ce49bbb1c354bcf4f8ab8645c9047)), closes [#10](https://github.com/dewi-ny-je/apexcharts-card/issues/10)
+* upgrade ApexCharts to 6.8.0 ([bee5be1](https://github.com/dewi-ny-je/apexcharts-card/commit/bee5be18a45887ecb3dd6cc29bd4478676317ec0))
+* upgrade ApexCharts to 6.8.0 ([3aa00e9](https://github.com/dewi-ny-je/apexcharts-card/commit/3aa00e9ed97982fbeedce3bee704f65c29d96189))
+
 ## [2.4.3](https://github.com/dewi-ny-je/apexcharts-card/compare/v2.4.2...v2.4.3) (2026-08-06)
 
 ### Bug Fixes
