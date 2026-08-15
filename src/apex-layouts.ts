@@ -25,6 +25,11 @@ import { layoutMinimal } from './layouts/minimal';
 import { getLocales, getDefaultLocale } from './locales';
 import GraphEntry from './graphEntry';
 
+/*
+ * `hass` is taken as a getter rather than as a value: the layout is built once, when the chart is
+ * created, but the `EVAL:` functions it contains are called for as long as the chart lives and
+ * have to see the current states. See `liveHass()`.
+ */
 export function getLayoutConfig(
   config: ChartCardConfig,
   getHass: () => HomeAssistant | undefined = () => undefined,
@@ -113,10 +118,11 @@ export function getLayoutConfig(
   }
 
   return config.apex_config
-    ? mergeDeep(mergeDeep(def, conf), evalApexConfig(config.apex_config, getHass))
+    ? mergeDeep(mergeDeep(def, conf), evalApexConfig(config.apex_config, liveHass(getHass)))
     : mergeDeep(def, conf);
 }
 
+// `hass` is a getter for the reason given on `getLayoutConfig()`.
 export function getBrushLayoutConfig(
   config: ChartCardConfig,
   getHass: () => HomeAssistant | undefined = () => undefined,
@@ -187,7 +193,7 @@ export function getBrushLayoutConfig(
       text: 'Loading...',
     },
   };
-  return config.brush?.apex_config ? mergeDeep(def, evalApexConfig(config.brush.apex_config, getHass)) : def;
+  return config.brush?.apex_config ? mergeDeep(def, evalApexConfig(config.brush.apex_config, liveHass(getHass))) : def;
 }
 
 function getFillOpacity(config: ChartCardConfig, brush: boolean): number[] {
@@ -553,34 +559,52 @@ function getFillType(config: ChartCardConfig, brush: boolean) {
 }
 
 /*
- * Evaluates every `EVAL:` string found in `apexConfig`, exposing `hass` to the evaluated code
- * the same way `transform` and `data_generator` do.
+ * A stand-in for `hass` which always reads through to the current object.
  *
- * `apexConfig` is mutated in place and this only ever runs once per card (from `getLayoutConfig`,
- * called by `_initialLoad`), so `hass` must not be captured by value: an `EVAL:` returning a
- * function is kept by ApexCharts and called on every render, long after the `hass` object present
- * at evaluation time has been replaced by Home Assistant. Such functions are therefore wrapped so
- * that `hass` is resolved through `getHass()` on each call. An `EVAL:` returning anything else is
- * a plain value and stays a one-time evaluation.
+ * `EVAL:` code is evaluated once, but an `EVAL:` returning a function is kept by ApexCharts and
+ * called on every render, long after Home Assistant has replaced the `hass` object that was
+ * current at evaluation time. Handing that code the object itself would freeze the states it can
+ * see, so it gets this proxy instead: every property read resolves against the live `hass`, which
+ * keeps the user code a one-time evaluation with no wrapper around it.
+ *
+ * The only thing this doesn't cover is code which reads out of `hass` at evaluation time and keeps
+ * the result, e.g. `EVAL:(function () { const states = hass.states; return function () { ... }; })()`
+ * — `states` is then an ordinary reference to a snapshot, and ages like one.
+ */
+function liveHass(getHass: () => HomeAssistant | undefined): HomeAssistant {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const resolve = () => (getHass() || {}) as any;
+  return new Proxy({} as HomeAssistant, {
+    get: (_target, prop) => {
+      const hass = resolve();
+      const value = hass[prop];
+      // `callService` and friends need the real `hass` as their `this`, not the proxy.
+      return typeof value === 'function' ? value.bind(hass) : value;
+    },
+    has: (_target, prop) => prop in resolve(),
+    ownKeys: () => Reflect.ownKeys(resolve()),
+    getOwnPropertyDescriptor: (_target, prop) => {
+      const descriptor = Reflect.getOwnPropertyDescriptor(resolve(), prop);
+      // The proxy target is empty, so every property has to be reported as configurable.
+      return descriptor ? { ...descriptor, configurable: true } : undefined;
+    },
+  });
+}
+
+/*
+ * Evaluates every `EVAL:` string found in `apexConfig`, exposing `hass` to the evaluated code the
+ * same way `transform` and `data_generator` do. `apexConfig` is mutated in place.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function evalApexConfig(apexConfig: any, getHass: () => HomeAssistant | undefined): any {
+function evalApexConfig(apexConfig: any, hass: HomeAssistant): any {
   Object.keys(apexConfig).forEach((key) => {
     if (typeof apexConfig[key] === 'string' && apexConfig[key].trim().startsWith('EVAL:')) {
       // No `'use strict'` here: the code used to run through an indirect `eval`, and sloppy mode
       // is kept so that existing snippets don't start throwing.
-      const evaluate = new Function('hass', `return (${apexConfig[key].trim().slice(5)});`);
-      const evaluated = evaluate(getHass());
-      apexConfig[key] =
-        typeof evaluated === 'function'
-          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            function (this: unknown, ...args: any[]) {
-              return evaluate(getHass()).apply(this, args);
-            }
-          : evaluated;
+      apexConfig[key] = new Function('hass', `return (${apexConfig[key].trim().slice(5)});`)(hass);
     }
     if (typeof apexConfig[key] === 'object' && apexConfig[key] !== null) {
-      apexConfig[key] = evalApexConfig(apexConfig[key], getHass);
+      apexConfig[key] = evalApexConfig(apexConfig[key], hass);
     }
   });
   return apexConfig;

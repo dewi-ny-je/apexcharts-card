@@ -655,7 +655,7 @@ apex_config:
 
 Two things to keep in mind:
 
-* When your `EVAL:` returns a **function** (formatters, custom tooltips, ...), `hass` is read every time the function is called, so it always sees the current states.
+* When your `EVAL:` returns a **function** (formatters, custom tooltips, ...), `hass` is read every time the function is called, so it always sees the current states. Read it inside the function: a value copied out of `hass` beforehand (`const states = hass.states;` outside the returned function) is a snapshot and won't be updated.
 * When your `EVAL:` returns a **value** (a number, a string, an array, ...), it is evaluated only once, when the chart is created. The value will not follow later state changes.
 
 :warning: Reading an entity in an `EVAL:` does **not** make the card refresh when that entity changes: the card only refreshes when one of the entities listed in `series` changes, or on `update_interval`. If you need the chart to follow an entity which isn't plotted, add it as a hidden series — it will then trigger refreshes without being drawn or affecting the y-axis:
