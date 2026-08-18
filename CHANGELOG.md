@@ -1,3 +1,10 @@
+## [2.5.2](https://github.com/dewi-ny-je/apexcharts-card/compare/v2.5.1...v2.5.2) (2026-08-18)
+
+### Bug Fixes
+
+* drop duplicate entries from the release notes ([31356ee](https://github.com/dewi-ny-je/apexcharts-card/commit/31356eed9da5d2650c2476d85c9cd4cac88d21a0)), closes [#14](https://github.com/dewi-ny-je/apexcharts-card/issues/14)
+* Upgrade ApexCharts to 6.10.0 ([f94ef88](https://github.com/dewi-ny-je/apexcharts-card/commit/f94ef88488054596e2042c8397a24d573ebe5065)), closes [apexcharts/apexcharts.js#5271](https://github.com/apexcharts/apexcharts.js/issues/5271)
+
 ## [2.5.1](https://github.com/dewi-ny-je/apexcharts-card/compare/v2.5.0...v2.5.1) (2026-08-18)
 
 ### Bug Fixes
