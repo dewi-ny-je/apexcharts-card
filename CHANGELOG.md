@@ -1,3 +1,14 @@
+## [2.5.1](https://github.com/dewi-ny-je/apexcharts-card/compare/v2.5.0...v2.5.1) (2026-08-18)
+
+### Bug Fixes
+
+* Rebuild the chart when setConfig is called again ([e9d404f](https://github.com/dewi-ny-je/apexcharts-card/commit/e9d404f4d80c6a7e719746e90ce39ebde37ca9fd)), closes [#14](https://github.com/dewi-ny-je/apexcharts-card/issues/14)
+* Rebuild the chart when setConfig is called again ([#14](https://github.com/dewi-ny-je/apexcharts-card/issues/14)) ([cb9f892](https://github.com/dewi-ny-je/apexcharts-card/commit/cb9f8922d42cb72884fdd66e68d9a6194d74d083))
+
+### Documentation
+
+* Describe what the reset at the end of setConfig actually does ([c913f33](https://github.com/dewi-ny-je/apexcharts-card/commit/c913f336864079cc714d6ba6c99ebd5ff406ff80))
+
 ## [2.5.0](https://github.com/dewi-ny-je/apexcharts-card/compare/v2.4.3...v2.5.0) (2026-08-15)
 
 ### Features
