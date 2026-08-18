@@ -87,6 +87,7 @@ import {
 import parse from 'parse-duration';
 import tinycolor from '@ctrl/tinycolor';
 import { actionHandler } from './action-handler-directive';
+import { alignAnnotationBackgrounds } from './annotation-alignment';
 
 /* eslint no-console: 0 */
 console.info(
@@ -806,6 +807,11 @@ class ChartsCard extends LitElement {
         (layout as any).chart.id = Math.random().toString(36).substring(7);
       }
       this._apexChart = new ApexCharts(graph, layout as ApexOptions);
+      // ApexCharts draws the annotations from scratch on every render of the
+      // chart, a redraw on resize included, so realigning them once after the
+      // card's own updates wouldn't be enough.
+      this._apexChart.addEventListener('mounted', () => alignAnnotationBackgrounds(graph));
+      this._apexChart.addEventListener('updated', () => alignAnnotationBackgrounds(graph));
       const promises: Promise<ApexCharts>[] = [];
       promises.push(this._apexChart.render());
       if (this._config.series_in_brush.length && brush) {
@@ -814,6 +820,8 @@ class ChartsCard extends LitElement {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           getBrushLayoutConfig(this._config, () => this._hass, (layout as any).chart.id) as ApexOptions,
         );
+        this._apexBrush.addEventListener('mounted', () => alignAnnotationBackgrounds(brush));
+        this._apexBrush.addEventListener('updated', () => alignAnnotationBackgrounds(brush));
         promises.push(this._apexBrush.render());
       }
       await Promise.all(promises);
