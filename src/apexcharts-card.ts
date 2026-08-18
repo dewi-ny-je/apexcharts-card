@@ -462,6 +462,8 @@ class ChartsCard extends LitElement {
         });
         this._config.series_in_graph = [];
         this._config.series_in_brush = [];
+        this._colors = [];
+        this._brushColors = [];
         this._config.series.forEach((serie, index) => {
           if (serie.show.in_chart) {
             this._colors.push(this._headerColors[index]);
@@ -511,7 +513,7 @@ class ChartsCard extends LitElement {
       throw new Error(`/// apexcharts-card version ${pjson.version} /// ${e.message}`);
     }
     // Full reset only happens in editor mode
-    // this._reset();
+    this._reset();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -819,7 +821,12 @@ class ChartsCard extends LitElement {
   }
 
   private async _updateData() {
-    if (!this._config || !this._apexChart || !this._graphs) return;
+    if (!this._config || !this._apexChart || !this._graphs) {
+      // The callers set `_updating` before calling us: releasing it here is what
+      // allows the update to be retried once the chart is up.
+      this._updating = false;
+      return;
+    }
 
     const { start, end } = this._getSpanDates();
     const now = new Date();
