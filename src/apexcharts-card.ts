@@ -512,7 +512,8 @@ class ChartsCard extends LitElement {
     } catch (e: any) {
       throw new Error(`/// apexcharts-card version ${pjson.version} /// ${e.message}`);
     }
-    // Full reset only happens in editor mode
+    // A full teardown only happens when the card was already rendered: on the
+    // initial configuration `_hass` isn't set yet, so this is a no-op.
     this._reset();
   }
 
