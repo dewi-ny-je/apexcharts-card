@@ -129,108 +129,108 @@ The card strictly validates all the options available (but not for the `apex_con
 
 :white_check_mark: **means required**.
 
-| Name | Type | Default | Since | Description |
-| ---- | :--: | :-----: | :---: | ----------- |
-| :white_check_mark: `type` | string | | v1.0.0 | `custom:apexcharts-card` |
-| :white_check_mark: `series` | array | | v1.0.0 | See [series](#series-options) |
-| `section_mode` | boolean | `false` | v2.2.0 | Set to `true` when the card is used in a section view (sets CSS height to `100%`). See [Sections Views](#sections-views) |
-| `config_templates` | array | | v1.6.0 | Define a configuration once and reuse it multiple times. See [config_templates](#configuration-templates) |
-| `color_list` | array | | v1.6.0 | Define the array of colors applied to the series. Will be overridden by each series's color if defined. Useful for `config_templates` mainly. |
-| `all_series_config` | object | | v1.6.0 | If something is defined here it will apply this config to all the series. It accepts the same options as a series minus `entity`. It is useful to avoid repetition but the same thing can be achieved in each series individually. See [series](#series-options) and [all_series_config](#all_series_config-options) for an example |
-| `chart_type` | string | `line` | v1.4.0 | See [chart_type](#chart_type-options) |
-| `update_interval` | string | | v1.1.0 | By default the card updates on every state change. Setting this overrides the behaviour. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
-| `update_delay` | string | `1500ms` | v1.4.0 | If the chart doesn't display the last state but the one before, you'll want to increase this value, don't go over `10s`, it's not necessary. You'll also want to increase this value if you are using `attribute` in the `series`. Valid values are any time strings. This is because of how Home-Assistant works with history, see [here](https://www.home-assistant.io/integrations/recorder/#commit_interval) |
-| `graph_span` | string | `24h` | v1.1.0 | The span of the graph as a time interval. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
-| `span` | object | | v1.2.0 | See [span](#span-options) |
-| `show` | object | | v1.0.0 | See [show](#main-show-options) |
-| `hours_12` | boolean | | v1.8.0 | If undefined, it will follow Home-Assistant's user time format. If `true`, it will force time to be displayed in 12h format. If `false` it will force the time to be displayed in 24h format. |
-| `cache` | boolean | `true` | v1.0.0 | Use in-browser data caching to reduce the load on Home Assistant's server |
-| `stacked` | boolean | `false` | v1.0.0 | Enable if you want the data to be stacked on the graph |
-| `layout` | string | | v1.0.0 | See [layouts](#layouts) |
-| `header` | object | | v1.0.0 | See [header](#header-options) |
-| `now` | object | | v1.5.0 | See [now](#now-options) |
-| ~~`y_axis_precision`~~ | ~~number~~ | ~~`1`~~ | ~~v1.2.0~~ | **DEPRECATED since v1.10.0** ~~The float precision used to display numbers on the Y axis. Only works if `yaxis` is undefined.~~ |
-| `yaxis` | array | | v1.9.0 | See [yaxis](#yaxis-options-multi-y-axis) |
-| `apex_config`| object | | v1.0.0 | ApexCharts API 1:1 mapping. All the options are described in ApexCharts' [`Options (Reference)`](https://apexcharts.com/docs/options/). See [Apex Charts](#apex-charts-options-example) |
-| `experimental` | object | | v1.6.0 | See [experimental](#experimental-features) |
-| `locale` | string | | v1.7.0 | Default is to inherit from Home-Assistant's user configuration. This overrides it and forces the locale. Eg: `en`, or `fr`. Reverts to `en` if the locale is unknown. |
-| `brush` | object | | v1.8.0 | See [brush](#brush-experimental-feature) |
+| Name | Type | Default | Description |
+| ---- | :--: | :-----: | ----------- |
+| :white_check_mark: `type` | string | | `custom:apexcharts-card` |
+| :white_check_mark: `series` | array | | See [series](#series-options) |
+| `section_mode` | boolean | `false` | Set to `true` when the card is used in a section view (sets CSS height to `100%`). See [Sections Views](#sections-views) |
+| `config_templates` | array | | Define a configuration once and reuse it multiple times. See [config_templates](#configuration-templates) |
+| `color_list` | array | | Define the array of colors applied to the series. Will be overridden by each series's color if defined. Useful for `config_templates` mainly. |
+| `all_series_config` | object | | If something is defined here it will apply this config to all the series. It accepts the same options as a series minus `entity`. It is useful to avoid repetition but the same thing can be achieved in each series individually. See [series](#series-options) and [all_series_config](#all_series_config-options) for an example |
+| `chart_type` | string | `line` | See [chart_type](#chart_type-options) |
+| `update_interval` | string | | By default the card updates on every state change. Setting this overrides the behaviour. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
+| `update_delay` | string | `1500ms` | If the chart doesn't display the last state but the one before, you'll want to increase this value, don't go over `10s`, it's not necessary. You'll also want to increase this value if you are using `attribute` in the `series`. Valid values are any time strings. This is because of how Home-Assistant works with history, see [here](https://www.home-assistant.io/integrations/recorder/#commit_interval) |
+| `graph_span` | string | `24h` | The span of the graph as a time interval. Valid values are any time string, eg: `1h`, `12min`, `1d`, `1h25`, `10sec`, ... |
+| `span` | object | | See [span](#span-options) |
+| `show` | object | | See [show](#main-show-options) |
+| `hours_12` | boolean | | If undefined, it will follow Home-Assistant's user time format. If `true`, it will force time to be displayed in 12h format. If `false` it will force the time to be displayed in 24h format. |
+| `cache` | boolean | `true` | Use in-browser data caching to reduce the load on Home Assistant's server |
+| `stacked` | boolean | `false` | Enable if you want the data to be stacked on the graph |
+| `layout` | string | | See [layouts](#layouts) |
+| `header` | object | | See [header](#header-options) |
+| `now` | object | | See [now](#now-options) |
+| ~~`y_axis_precision`~~ | ~~number~~ | ~~`1`~~ | **DEPRECATED since v1.10.0** ~~The float precision used to display numbers on the Y axis. Only works if `yaxis` is undefined.~~ |
+| `yaxis` | array | | See [yaxis](#yaxis-options-multi-y-axis) |
+| `apex_config`| object | | ApexCharts API 1:1 mapping. All the options are described in ApexCharts' [`Options (Reference)`](https://apexcharts.com/docs/options/). See [Apex Charts](#apex-charts-options-example) |
+| `experimental` | object | | See [experimental](#experimental-features) |
+| `locale` | string | | Default is to inherit from Home-Assistant's user configuration. This overrides it and forces the locale. Eg: `en`, or `fr`. Reverts to `en` if the locale is unknown. |
+| `brush` | object | | See [brush](#brush-experimental-feature) |
 
 
 
 ### `series` Options
 
-| Name | Type | Default | Since | Description |
-| ---- | :--: | :-----: | :---: | ----------- |
-| :white_check_mark: `entity` | string | | v1.0.0 | The `entity_id` of the sensor to display |
-| `attribute` | string | | v1.4.0 | Instead of retrieving the state, it will retrieve an `attribute` of the entity. Make sure you increase `update_delay` if the chart doesn't reflect the last value of the attribute |
-| `name` | string | | v1.0.0 | Override the name of the entity |
-| `stack_group` | string | | v2.1.0 | When `stacked` is `true`, groups the different series with the name `stack_group` together. Only works for `type: column`. All series' names need to be be unique because of a bug in apexcharts.js |
-| `color` | string | | v1.1.0 | Color of the serie. Supported formats: `yellow`, `#aabbcc`, `rgb(128, 128, 128)` or `var(--css-color-variable)` |
-| `opacity` | number | `0.7` for `area`<br/>else `1` | v1.6.0 | The opacity of the line or filled area, between `0` and `1` |
-| `stroke_width` | number | `5` | v1.6.0 | Change the width of the line. Only works for `area` and `line` |
-| `stroke_dash` | number or array | `0` | v2.1.0 | Creates a dashed line. The higher the number, the bigger the dash. An array can be used to specify more complex patterns. |
-| `type` | string | `line` | v1.0.0 | `line`, `area` or `column`. Only taken into account when `chart_type` is left undefined, see [chart_type](#chart_type-options) |
-| `curve` | string | `smooth` | v1.0.0 | `smooth` (nice curve), `straight` (direct line between points), `stepline` (flat line until next point then straight up or down) or `monotoneCubic` (monotone cubic spline). Maps to ApexCharts' [`stroke.curve`](https://apexcharts.com/docs/options/stroke/) |
-| ~~`extend_to_end`~~ | ~~boolean~~ | ~~`true`~~ | ~~v1.0.0~~ | **DEPRECATED since v2.0.0** ~~If the last data is older than the end time displayed on the graph, setting to true will extend the value until the end of the timeline. Only works for `line` and `area` types.~~ |
-| `extend_to` | boolean or string | `end` | v2.0.0 | If the value is `end`, it will extend the line/area to the end of the chart. With `now`, it will extend it to the current time (useful for chart showing current and future data). If `false` it will not do anything. Only available for `line` and `area` types. |
-| `unit` | string | | v1.0.0 | Override the unit of the sensor |
-| `float_precision` | number | `1` | v1.2.0 | The precision used to display data in the legend and the tooltip. It doesn't impact how the data is displayed on the graph. The value is displayed with exactly this number of decimals, preserving trailing zeros (eg. with `float_precision: 2`, `1.5` is shown as `1.50`) |
-| `fill_raw` | string | `'null'` | v1.5.0 | If there is any missing value in the history, `last` will replace them with the last non-empty state, `zero` will fill missing values with `0`, `'null'` will fill missing values with `null`. This is applied before `group_by` options |
-| `group_by` | object | | v1.0.0 | See [group_by](#group_by-options) |
-| `invert` | boolean | `false` | v1.2.0 | Negates the data (`1` -> `-1`). Useful to display opposite values like network in (standard)/out (inverted) |
-| `transform` | string | | v1.5.0 | Transform your raw data in any way you like. See [transform](#transform-option) |
-| `data_generator` | string | | v1.2.0 | See [data_generator](#data_generator-option) |
-| `statistics` | object | | v2.0.0 | Use HA statistical data (long-term). See [statistics](#statistics-options) |
-| `offset` | string | | v1.3.0 | This is different from the main `offset` parameter. This is at the series level. It is only useful if you want to display data from for eg. yesterday on top of the data from today for the same sensor and compare the data. The time displayed in the tooltip will be wrong as will the x-axis information. Valid values are any negative time string, eg: `-1h`, `-12min`, `-1d`, `-1h25`, `-10sec`, ... `month` (365.25 days / 12) and `year` (365.25 days) as unit will generate an inconsistent result, you should use days instead. |
-| `time_delta` | string | | v2.0.0 | This applies a time delta to all the data points of your chart **after** fetching them. You can cumulate it with `offset`. Valid values are any time strings starting with `+` or `-`, eg: `-30min`, `+2h`, `-2d`, ... |
-| `min` | number | `0` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Minimum value of the sensor |
-| `max` | number | `100` | v1.4.0 | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Maximum value of the sensor |
-| `color_threshold` | object | | v1.6.0 | See [experimental](#experimental-features) |
-| `yaxis_id` | string | | v1.9.0 | The identification name of the y-axis to which this series should be associated. See [yaxis](#yaxis-options-multi-y-axis) |
-| `show` | object | | v1.3.0 | See [serie's show options](#series-show-options) |
-| `header_actions` | object | | v1.10.0 | See [header_actions](#header_actions-or-title_actions-options) |
+| Name | Type | Default | Description |
+| ---- | :--: | :-----: | ----------- |
+| :white_check_mark: `entity` | string | | The `entity_id` of the sensor to display |
+| `attribute` | string | | Instead of retrieving the state, it will retrieve an `attribute` of the entity. Make sure you increase `update_delay` if the chart doesn't reflect the last value of the attribute |
+| `name` | string | | Override the name of the entity |
+| `stack_group` | string | | When `stacked` is `true`, groups the different series with the name `stack_group` together. Only works for `type: column`. All series' names need to be be unique because of a bug in apexcharts.js |
+| `color` | string | | Color of the serie. Supported formats: `yellow`, `#aabbcc`, `rgb(128, 128, 128)` or `var(--css-color-variable)` |
+| `opacity` | number | `0.7` for `area`<br/>else `1` | The opacity of the line or filled area, between `0` and `1` |
+| `stroke_width` | number | `5` | Change the width of the line. Only works for `area` and `line` |
+| `stroke_dash` | number or array | `0` | Creates a dashed line. The higher the number, the bigger the dash. An array can be used to specify more complex patterns. |
+| `type` | string | `line` | `line`, `area` or `column`. Only taken into account when `chart_type` is left undefined, see [chart_type](#chart_type-options) |
+| `curve` | string | `smooth` | `smooth` (nice curve), `straight` (direct line between points), `stepline` (flat line until next point then straight up or down) or `monotoneCubic` (monotone cubic spline). Maps to ApexCharts' [`stroke.curve`](https://apexcharts.com/docs/options/stroke/) |
+| ~~`extend_to_end`~~ | ~~boolean~~ | ~~`true`~~ | **DEPRECATED since v2.0.0** ~~If the last data is older than the end time displayed on the graph, setting to true will extend the value until the end of the timeline. Only works for `line` and `area` types.~~ |
+| `extend_to` | boolean or string | `end` | If the value is `end`, it will extend the line/area to the end of the chart. With `now`, it will extend it to the current time (useful for chart showing current and future data). If `false` it will not do anything. Only available for `line` and `area` types. |
+| `unit` | string | | Override the unit of the sensor |
+| `float_precision` | number | `1` | The precision used to display data in the legend and the tooltip. It doesn't impact how the data is displayed on the graph. The value is displayed with exactly this number of decimals, preserving trailing zeros (eg. with `float_precision: 2`, `1.5` is shown as `1.50`) |
+| `fill_raw` | string | `'null'` | If there is any missing value in the history, `last` will replace them with the last non-empty state, `zero` will fill missing values with `0`, `'null'` will fill missing values with `null`. This is applied before `group_by` options |
+| `group_by` | object | | See [group_by](#group_by-options) |
+| `invert` | boolean | `false` | Negates the data (`1` -> `-1`). Useful to display opposite values like network in (standard)/out (inverted) |
+| `transform` | string | | Transform your raw data in any way you like. See [transform](#transform-option) |
+| `data_generator` | string | | See [data_generator](#data_generator-option) |
+| `statistics` | object | | Use HA statistical data (long-term). See [statistics](#statistics-options) |
+| `offset` | string | | This is different from the main `offset` parameter. This is at the series level. It is only useful if you want to display data from for eg. yesterday on top of the data from today for the same sensor and compare the data. The time displayed in the tooltip will be wrong as will the x-axis information. Valid values are any negative time string, eg: `-1h`, `-12min`, `-1d`, `-1h25`, `-10sec`, ... `month` (365.25 days / 12) and `year` (365.25 days) as unit will generate an inconsistent result, you should use days instead. |
+| `time_delta` | string | | This applies a time delta to all the data points of your chart **after** fetching them. You can cumulate it with `offset`. Valid values are any time strings starting with `+` or `-`, eg: `-30min`, `+2h`, `-2d`, ... |
+| `min` | number | `0` | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Minimum value of the sensor |
+| `max` | number | `100` | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Maximum value of the sensor |
+| `color_threshold` | object | | See [experimental](#experimental-features) |
+| `yaxis_id` | string | | The identification name of the y-axis to which this series should be associated. See [yaxis](#yaxis-options-multi-y-axis) |
+| `show` | object | | See [serie's show options](#series-show-options) |
+| `header_actions` | object | | See [header_actions](#header_actions-or-title_actions-options) |
 
 ### series' `show` Options
 
-| Name | Type | Default | Since | Description |
-| ---- | :--: | :-----: | :---: | ----------- |
-| `legend_value` | boolean | `true` | v1.3.0 | Show/Hide the state in the legend. Will still display the name |
-| `as_duration` | string | | v1.3.0 | Will pretty print the states as durations. Doesn't affect the graph, only the tooltip/legend/header display. You provide the source unit of your sensor. Valid values are `millisecond`, `second`, `minute`, `hour`, `day`, `week`, `month`, `year`.<br/>Eg: if the state is `345` and `as_duration` is set to `minute` then it would display `5h 45m` |
-| `in_legend` | boolean or string | `true` | v1.3.0 | Show/Hide this specific series in the legend. When `legend_value` is enabled, the displayed value can also be an aggregation: `before_now`/`after_now` display the value just before/after the current time (useful with offset series), `sum` displays the sum of all the points up to now and `average` displays their average (introduced in v2.3.0) |
-| `in_header` | boolean or string | `true` | v1.4.0 | If `show_states` is enabled, this would show/hide this specific series in the header. If set to `raw` (introduced in v1.7.0), it would display the latest raw state of the entity in the header bypassing any grouping/transformation done by the card. If the graph spans into the future (using `data_generator`): `before_now` would display the value just before the current time and `after_now` would display the value just after the current time (Introduced in v1.8.0). `sum` and `average` display respectively the sum and the average of all the points up to now (introduced in v2.3.0) |
-| `unit` | boolean or string | `true` | v2.3.0 | Only valid if `in_header: true`. If `false`, the unit of measurement is not shown next to the state in the header. If set to `before_value`, the unit is shown before the state instead of after it (e.g. to display `$ 1.50` instead of `1.50 $`) |
-| `name_in_header` | boolean | `true` | v1.8.0 | Only valid if `in_header: true`. If `false`, it will hide the name of the series under its state in the header |
-| `null_in_header` | boolean | `true` | v2.2.0 | Only valid if `in_header: true`. If `false`, it will hide the name of the series in the header if the value is null |
-| `zero_in_header` | boolean | `true` | v2.2.0 | Only valid if `in_header: true`. If `false`, it will hide the name of the series in the header if the value is zero |
-| `header_color_threshold` | boolean | `false` | v1.7.0 | If `true` and `color_threshold` experimental mode is enabled, it will colorize the header's state based on the threshold (ignoring opacity). |
-| `in_chart` | boolean | `true` | v1.4.0 | If `false`, hides the series from the chart |
-| `datalabels` | boolean or string | `false` | v1.5.0 | If `true` will show the value of each point for this series directly in the chart. Don't use it if you have a lot of points displayed, it will be a mess. If you set it to `total` (introduced in v1.7.0), it will display the stacked total value (only works when `stacked: true`). If you set it to `percent`, it will display the percentage of the series instead of the value in the case of a `pie` or `donut` chart. |
-| `hidden_by_default` | boolean | `false` | v1.6.0 | See [experimental](#hidden_by_default-experimental-feature) |
-| `extremas` | boolean or string | `false` | v1.7.0 | If `true`, will show the min and the max of the series in the chart.  If the value is `time`, it will display also the time of the min/max value on top of the value. From v2.0.0, `min` or `max` will display the min or the max only and `min+time` or `max+time` will display the time of the min or the max. Displaying the time doesn't work with `stacked: true`. |
-| `in_brush` | boolean | `false` | v1.8.0 | See [brush](#brush-experimental-feature) |
-| `offset_in_name` | boolean | `true` | v1.8.0 | If `true`, it appends the offset information to the name of the series. If `false`, it doesn't |
+| Name | Type | Default | Description |
+| ---- | :--: | :-----: | ----------- |
+| `legend_value` | boolean | `true` | Show/Hide the state in the legend. Will still display the name |
+| `as_duration` | string | | Will pretty print the states as durations. Doesn't affect the graph, only the tooltip/legend/header display. You provide the source unit of your sensor. Valid values are `millisecond`, `second`, `minute`, `hour`, `day`, `week`, `month`, `year`.<br/>Eg: if the state is `345` and `as_duration` is set to `minute` then it would display `5h 45m` |
+| `in_legend` | boolean or string | `true` | Show/Hide this specific series in the legend. When `legend_value` is enabled, the displayed value can also be an aggregation: `before_now`/`after_now` display the value just before/after the current time (useful with offset series), `sum` displays the sum of all the points up to now and `average` displays their average (introduced in v2.3.0) |
+| `in_header` | boolean or string | `true` | If `show_states` is enabled, this would show/hide this specific series in the header. If set to `raw` (introduced in v1.7.0), it would display the latest raw state of the entity in the header bypassing any grouping/transformation done by the card. If the graph spans into the future (using `data_generator`): `before_now` would display the value just before the current time and `after_now` would display the value just after the current time (Introduced in v1.8.0). `sum` and `average` display respectively the sum and the average of all the points up to now (introduced in v2.3.0) |
+| `unit` | boolean or string | `true` | Only valid if `in_header: true`. If `false`, the unit of measurement is not shown next to the state in the header. If set to `before_value`, the unit is shown before the state instead of after it (e.g. to display `$ 1.50` instead of `1.50 $`) |
+| `name_in_header` | boolean | `true` | Only valid if `in_header: true`. If `false`, it will hide the name of the series under its state in the header |
+| `null_in_header` | boolean | `true` | Only valid if `in_header: true`. If `false`, it will hide the name of the series in the header if the value is null |
+| `zero_in_header` | boolean | `true` | Only valid if `in_header: true`. If `false`, it will hide the name of the series in the header if the value is zero |
+| `header_color_threshold` | boolean | `false` | If `true` and `color_threshold` experimental mode is enabled, it will colorize the header's state based on the threshold (ignoring opacity). |
+| `in_chart` | boolean | `true` | If `false`, hides the series from the chart |
+| `datalabels` | boolean or string | `false` | If `true` will show the value of each point for this series directly in the chart. Don't use it if you have a lot of points displayed, it will be a mess. If you set it to `total` (introduced in v1.7.0), it will display the stacked total value (only works when `stacked: true`). If you set it to `percent`, it will display the percentage of the series instead of the value in the case of a `pie` or `donut` chart. |
+| `hidden_by_default` | boolean | `false` | See [experimental](#hidden_by_default-experimental-feature) |
+| `extremas` | boolean or string | `false` | If `true`, will show the min and the max of the series in the chart.  If the value is `time`, it will display also the time of the min/max value on top of the value. From v2.0.0, `min` or `max` will display the min or the max only and `min+time` or `max+time` will display the time of the min or the max. Displaying the time doesn't work with `stacked: true`. |
+| `in_brush` | boolean | `false` | See [brush](#brush-experimental-feature) |
+| `offset_in_name` | boolean | `true` | If `true`, it appends the offset information to the name of the series. If `false`, it doesn't |
 
 ### `header_actions` or `title_actions` options
 
 
-| Name | Type | Default | Since | Description |
-| ---- | :--: | :-----: | :---: | ----------- |
-| `tap_action` | object | | v1.10.0 | Action to perform on tap. See [action options](#_action-options) |
-| `hold_action` | object | | v1.10.0 | Action to perform on hold. See [action options](#_action-options) |
-| `double_tap_action` | object | | v1.10.0 | Action to perform on double tap. See [action options](#_action-options) |
+| Name | Type | Default | Description |
+| ---- | :--: | :-----: | ----------- |
+| `tap_action` | object | | Action to perform on tap. See [action options](#_action-options) |
+| `hold_action` | object | | Action to perform on hold. See [action options](#_action-options) |
+| `double_tap_action` | object | | Action to perform on double tap. See [action options](#_action-options) |
 
 ### `*_action` options
 
-| Name | Type | Default | Since | Description |
-| ---- | :--: | :-----: | :---: | ----------- |
-| `action` | string | `more-info` | v1.10.0 | Action to perform. Valid values are: `more-info`, `toggle`, `call-service`, `none`, `navigate`, `url` |
-| `entity` | string | | v1.10.0 | Only valid for `more-info`. Overrides the `more-info` target entity. The default is to use the series's entity |
-| `navigation_path` | string | | v1.10.0 | Path to navigate to (e.g. `/lovelace/0/`) when action is `navigate` |
-| `url_path` | string | | v1.10.0 | URL to open on click when action is `url`. The URL will open in a new tab |
-| `service` | string | | v1.10.0 | Any valid Home-Assistant service |
-| `service_data` | object | | v1.10.0 | Service data to include (e.g. `entity_id: media_player.bedroom`) when `action` is defined as `call-service` |
-| `confirmation` | object | | v1.10.0 |Display a confirmation popup. See [confirmation](#confirmation-options) |
+| Name | Type | Default | Description |
+| ---- | :--: | :-----: | ----------- |
+| `action` | string | `more-info` | Action to perform. Valid values are: `more-info`, `toggle`, `call-service`, `none`, `navigate`, `url` |
+| `entity` | string | | Only valid for `more-info`. Overrides the `more-info` target entity. The default is to use the series's entity |
+| `navigation_path` | string | | Path to navigate to (e.g. `/lovelace/0/`) when action is `navigate` |
+| `url_path` | string | | URL to open on click when action is `url`. The URL will open in a new tab |
+| `service` | string | | Any valid Home-Assistant service |
+| `service_data` | object | | Service data to include (e.g. `entity_id: media_player.bedroom`) when `action` is defined as `call-service` |
+| `confirmation` | object | |Display a confirmation popup. See [confirmation](#confirmation-options) |
 
 Example:
 ```yaml
@@ -249,10 +249,10 @@ series:
 
 This will pop up a dialog box before running the action.
 
-| Name | Type | Default | Since | Description |
-| ---- | :--: | :-----: | :---: | ----------- |
-| `text` | string | | v1.10.0 | This text will be displayed in the popup |
-| `exemptions` | array | | v1.10.0 | Any user declared in this list will not see the confirmation dialog. Format `user: USER_ID` |
+| Name | Type | Default | Description |
+| ---- | :--: | :-----: | ----------- |
+| `text` | string | | This text will be displayed in the popup |
+| `exemptions` | array | | Any user declared in this list will not see the confirmation dialog. Format `user: USER_ID` |
 
 Example:
 
@@ -274,80 +274,80 @@ series:
 
 ### `statistics` options
 
-| Name | Type | Default | Since | Description |
-| ---- | :--: | :-----: | :---: | ----------- |
-| `type` | string | `mean` | v2.0.0 | Type of long term statistic to pull. Can be one of `min`, `max`, `mean`, `sum` `state` or `change` |
-| `period` | string | `hour` | v2.0.0 | Period of statistics to pull. Can be one of `5minute`, `hour`, `day`, `week` or `month` |
-| `align` | string | `middle` | v2.0.0 | Align the data points to the `start`, `end` or `middle` of the period of the statistics |
+| Name | Type | Default | Description |
+| ---- | :--: | :-----: | ----------- |
+| `type` | string | `mean` | Type of long term statistic to pull. Can be one of `min`, `max`, `mean`, `sum` `state` or `change` |
+| `period` | string | `hour` | Period of statistics to pull. Can be one of `5minute`, `hour`, `day`, `week` or `month` |
+| `align` | string | `middle` | Align the data points to the `start`, `end` or `middle` of the period of the statistics |
 
 ### Main `show` Options
 
-| Name | Type | Default | Since | Description |
-| ---- | :--: | :-----: | :---: | ----------- |
-| `loading` | boolean | `true` | v1.0.0 | Displays a spinning icon while the data is loading/updating |
-| `last_updated` | boolean | `false` | v1.10.0 | Show the last time the chart was updated on the bottom right |
-| `version` | boolean | `false` | v2.2.0 | Show the card version on the bottom left (useful for debug) |
+| Name | Type | Default | Description |
+| ---- | :--: | :-----: | ----------- |
+| `loading` | boolean | `true` | Displays a spinning icon while the data is loading/updating |
+| `last_updated` | boolean | `false` | Show the last time the chart was updated on the bottom right |
+| `version` | boolean | `false` | Show the card version on the bottom left (useful for debug) |
 
 ### `header` Options
 
-| Name | Type | Default | Since | Description |
-| ---- | :--: | :-----: | :---: | ----------- |
-| `show` | boolean | `false` | v1.0.0 | Show or hide the header |
-| `title` | string | | v1.1.0 | The title of the chart you want to display |
-| `title_actions` | object | | v2.0.0 | Actions to perform while tapping the title of the chart. See [title_actions](#header_actions-or-title_actions-options) |
-| `floating` | boolean | `false` | v1.0.0 | Makes the header float above the graph |
-| `show_states` | boolean | `false` | v1.1.0 | Show or hide the states in the header |
-| `colorize_states` | boolean | `false` | v1.1.0 | Colorize the states based on the color of the series |
-| `standard_format` | boolean | `false` | v1.8.0 | Display the title using the standard Home-Assistant card format |
-| `disable_actions` | boolean | `false` | v1.10.0 | If `true`, disable all header actions |
+| Name | Type | Default | Description |
+| ---- | :--: | :-----: | ----------- |
+| `show` | boolean | `false` | Show or hide the header |
+| `title` | string | | The title of the chart you want to display |
+| `title_actions` | object | | Actions to perform while tapping the title of the chart. See [title_actions](#header_actions-or-title_actions-options) |
+| `floating` | boolean | `false` | Makes the header float above the graph |
+| `show_states` | boolean | `false` | Show or hide the states in the header |
+| `colorize_states` | boolean | `false` | Colorize the states based on the color of the series |
+| `standard_format` | boolean | `false` | Display the title using the standard Home-Assistant card format |
+| `disable_actions` | boolean | `false` | If `true`, disable all header actions |
 
 ### `now` Options
 
 The position of the marker will only update when the card updates (state change or `update_interval`).
 
-| Name | Type | Default | Since | Description |
-| ---- | :--: | :-----: | :---: | ----------- |
-| `show` | boolean | `false` | v1.5.0 | Shows a vertical marker for the current time on the graph. Only useful if displaying data from the future |
-| `color` | string | `var(--primary-color)` | v1.5.0 | Color of the marker. The color of the text is computed automatically. |
-| `label` | string | | v1.5.0 | Text to display on the label. No label if not defined |
+| Name | Type | Default | Description |
+| ---- | :--: | :-----: | ----------- |
+| `show` | boolean | `false` | Shows a vertical marker for the current time on the graph. Only useful if displaying data from the future |
+| `color` | string | `var(--primary-color)` | Color of the marker. The color of the text is computed automatically. |
+| `label` | string | | Text to display on the label. No label if not defined |
 
 ![now_marker](docs/now-marker.png)
 
 ### `group_by` Options
 
-| Name | Type | Default | Since | Description |
-| ---- | :--: | :-----: | :---: | ----------- |
-| `func` | string | `raw` | v1.0.0 | See [func](#func-options) |
-| `duration` | string | `1h` | v1.0.0 | If `func` is **not** `raw` only. It builds buckets of states over a `duration`. Doesn't work for months. Eg of valid values: `2h`, `1d`, `10s`, `25min`, `1h30`, ... |
-| `fill` | string | `last` | v1.0.0 | If `func` is **not** `raw` only. If there is any missing value in the buckets of history data (grouped by duration), `last` will replace them with the last non-empty state, `zero` will fill missing values with `0`, `'null'` will fill missing values with `null` |
-| `start_with_last` | boolean | `false` | v1.8.0 | If `true`, each bucket of data will start with the last value from the previous bucket of data. Mostly useful only with `func: diff` |
+| Name | Type | Default | Description |
+| ---- | :--: | :-----: | ----------- |
+| `func` | string | `raw` | See [func](#func-options) |
+| `duration` | string | `1h` | If `func` is **not** `raw` only. It builds buckets of states over a `duration`. Doesn't work for months. Eg of valid values: `2h`, `1d`, `10s`, `25min`, `1h30`, ... |
+| `fill` | string | `last` | If `func` is **not** `raw` only. If there is any missing value in the buckets of history data (grouped by duration), `last` will replace them with the last non-empty state, `zero` will fill missing values with `0`, `'null'` will fill missing values with `null` |
+| `start_with_last` | boolean | `false` | If `true`, each bucket of data will start with the last value from the previous bucket of data. Mostly useful only with `func: diff` |
 
 ### `func` Options
 
-| Name | Since | Description |
-| ---- | :---: | ----------- |
-| `raw` | v1.0.0 | Displays all the state history as known by Home Assistant |
-| `avg` | v1.0.0 | Will return the average of all the states in each bucket |
-| `min` | v1.0.0 | Will return the smallest state of each bucket |
-| `max` | v1.0.0 | Will return the biggest state of each bucket |
-| `last` | v1.0.0 | Will return the last state of each bucket |
-| `first` | v1.0.0 | Will return the first state of each bucket |
-| `sum` | v1.0.0 | Will return the sum of all the states in each bucket |
-| `median` | v1.0.0 | Will return the median of all the states in each bucket |
-| `delta` | v1.0.0 | Will return the delta between the biggest and smallest state in each bucket |
-| `diff` | v1.4.0 | Will return the difference between the last and the first entry in the bucket |
+| Name | Description |
+| ---- | ----------- |
+| `raw` | Displays all the state history as known by Home Assistant |
+| `avg` | Will return the average of all the states in each bucket |
+| `min` | Will return the smallest state of each bucket |
+| `max` | Will return the biggest state of each bucket |
+| `last` | Will return the last state of each bucket |
+| `first` | Will return the first state of each bucket |
+| `sum` | Will return the sum of all the states in each bucket |
+| `median` | Will return the median of all the states in each bucket |
+| `delta` | Will return the delta between the biggest and smallest state in each bucket |
+| `diff` | Will return the difference between the last and the first entry in the bucket |
 
 ### `chart_type` Options
 
 `chart_type` is validated strictly: these are the only values the card accepts.
 
-| Name | Since | Description |
-| ---- | :---: | ----------- |
-| `line` | v1.0.0 | This is the default and will show a timeline. It is compatible with `series.type` = `column`, `line` and `area` (see the note below) |
-| `scatter` | v1.4.0 | Displays a cloud of points without a line between the values |
-| `pie` | v1.4.0 | This will display a pie chart with the last value computed for each sensor |
-| `donut` | v1.4.0 | This will display a donut chart with the last value computed of each sensor, the same as pie but with a hole in the center |
-| `radialBar` | v1.4.0 | This will display a radial bar chart with the last value computed for each sensor. The value is represented in percentage only. It is required to provide `min` and `max` for each series displayed as it requires converting the value into a percentage. The default value for `min` is `0` and for `max` it is `100`. This graph works well if you want to display sensors natively in percentages |
+| Name | Description |
+| ---- | ----------- |
+| `line` | This is the default and will show a timeline. It is compatible with `series.type` = `column`, `line` and `area` (see the note below) |
+| `scatter` | Displays a cloud of points without a line between the values |
+| `pie` | This will display a pie chart with the last value computed for each sensor |
+| `donut` | This will display a donut chart with the last value computed of each sensor, the same as pie but with a hole in the center |
+| `radialBar` | This will display a radial bar chart with the last value computed for each sensor. The value is represented in percentage only. It is required to provide `min` and `max` for each series displayed as it requires converting the value into a percentage. The default value for `min` is `0` and for `max` it is `100`. This graph works well if you want to display sensors natively in percentages |
 
 ![Charts Type](docs/charts_type.png)
 
@@ -364,11 +364,11 @@ axes, tooltip, legend and header) assumes one of the types listed above, so the 
 
 ### `span` Options
 
-| Name | Since | Description |
-| ---- | :---: | ----------- |
-| `start` | v1.2.0 | Display the graph from the beginning of the `minute`, `day`, `hour`, `week`, `month`, `year`, `isoWeek`. `isoWeek` is the start of the week according to ISO 8601 |
-| `end` | v1.2.0 | Display the graph from the end of the `minute`, `day`, `hour`, `week`, `month`, `year`, `isoWeek`. `isoWeek` is the end of the week according to ISO 8601 |
-| `offset` | v1.2.0 | Offset the graph by an amount of time. To offset in the past, start with `-`. Eg. of valid values: `-1day`, `-12h`, `12h`, `30min`, ... `month` (365.25 days / 12) and `year` (365.25 days) as unit will generate inconsistent result, you should use days instead. |
+| Name | Description |
+| ---- | ----------- |
+| `start` | Display the graph from the beginning of the `minute`, `day`, `hour`, `week`, `month`, `year`, `isoWeek`. `isoWeek` is the start of the week according to ISO 8601 |
+| `end` | Display the graph from the end of the `minute`, `day`, `hour`, `week`, `month`, `year`, `isoWeek`. `isoWeek` is the end of the week according to ISO 8601 |
+| `offset` | Offset the graph by an amount of time. To offset in the past, start with `-`. Eg. of valid values: `-1day`, `-12h`, `12h`, `30min`, ... `month` (365.25 days / 12) and `year` (365.25 days) as unit will generate inconsistent result, you should use days instead. |
 
 Span enables you to:
 * Offset the graph by an amount of time
@@ -534,16 +534,16 @@ Let's take this example:
 
 You can have as many y-axis as there are series defined in your configuration or less.
 
-| Name | Type | Default | Since | Description |
-| ---- | :--: | :-----: | :---: | ----------- |
-|`id` | string | | v1.9.0 | **Required** if you define multiple yaxis. The identification name of the y-axis used to map it to a series. Needs to be unique. |
-| `show` | boolean | `true` | v1.9.0 | Whether to show or not the axis on the chart |
-| `opposite` | boolean | `false` | v1.9.0 | If `true`, the axis will be shown on the right side of the chart |
-| `min` | `auto`, number or string | `auto` | v1.9.0 | If undefined or `auto`, the `min` of the y-axis will be automatically calculated based on the min value of all the series associated with this axis. See [below](#minmax-format) for other formats. |
-| `max` | `auto`, number or string | `auto` | v1.9.0 | If undefined or `auto`, the `min` of the y-axis will be automatically calculated based on the max value of all the series associated with this axis. See [below](#minmax-format) for other formats. |
-| `decimals` | number | `1` | v1.10.0 | Number of decimals to show on this y-axis |
-| `apex_config` | object | | v1.9.0 | Any configuration from https://apexcharts.com/docs/options/yaxis/, except `min`, `max`, `show` and `opposite` |
-| `align_to` | number | | v1.10.0 | Aligns the yaxis extremas to the closest multiple of `align_to`. Only valid if `min` or `max` are not fixed values. |
+| Name | Type | Default | Description |
+| ---- | :--: | :-----: | ----------- |
+|`id` | string | | **Required** if you define multiple yaxis. The identification name of the y-axis used to map it to a series. Needs to be unique. |
+| `show` | boolean | `true` | Whether to show or not the axis on the chart |
+| `opposite` | boolean | `false` | If `true`, the axis will be shown on the right side of the chart |
+| `min` | `auto`, number or string | `auto` | If undefined or `auto`, the `min` of the y-axis will be automatically calculated based on the min value of all the series associated with this axis. See [below](#minmax-format) for other formats. |
+| `max` | `auto`, number or string | `auto` | If undefined or `auto`, the `min` of the y-axis will be automatically calculated based on the max value of all the series associated with this axis. See [below](#minmax-format) for other formats. |
+| `decimals` | number | `1` | Number of decimals to show on this y-axis |
+| `apex_config` | object | | Any configuration from https://apexcharts.com/docs/options/yaxis/, except `min`, `max`, `show` and `opposite` |
+| `align_to` | number | | Aligns the yaxis extremas to the closest multiple of `align_to`. Only valid if `min` or `max` are not fixed values. |
 
 #### Min/Max Format
 
@@ -839,12 +839,12 @@ Generates the same result as repeating the configuration in each series:
 
 ### Configuration options
 
-| Name | Type | Default | Since | Description |
-| ---- | :--: | :-----: | :---: | ----------- |
-| `color_threshold` | boolean | `false` | v1.6.0 | Will enable the color threshold feature. See [color_threshold](#color_threshold-experimental-feature) |
-| `disable_config_validation` | boolean | `false` | v1.6.0 | If `true`, will disable the config validation. Useful if you have cards adding parameters to this one. Use at your own risk. |
-| `hidden_by_default` | boolean | `false` | v1.6.0 | Will allow you to use the `hidden_by_default` option. See [hidden_by_default](#hidden_by_default-experimental-feature) |
-| `brush` | boolean | `false` | v1.8.0 | Will display a brush which allows you to select a portion of time to display on the main chart. See [brush](#brush-experimental-feature) |
+| Name | Type | Default | Description |
+| ---- | :--: | :-----: | ----------- |
+| `color_threshold` | boolean | `false` | Will enable the color threshold feature. See [color_threshold](#color_threshold-experimental-feature) |
+| `disable_config_validation` | boolean | `false` | If `true`, will disable the config validation. Useful if you have cards adding parameters to this one. Use at your own risk. |
+| `hidden_by_default` | boolean | `false` | Will allow you to use the `hidden_by_default` option. See [hidden_by_default](#hidden_by_default-experimental-feature) |
+| `brush` | boolean | `false` | Will display a brush which allows you to select a portion of time to display on the main chart. See [brush](#brush-experimental-feature) |
 
 ### `color_threshold` experimental feature
 
@@ -976,15 +976,6 @@ series:
 
 * [ ] Support for logarithmic y-axis
 * [ ] Support for more of the [chart types](https://apexcharts.com/docs/chart-types/) offered by ApexCharts.js
-
-Everything else which used to be listed here has shipped: more chart types
-([`pie`, `donut`, `radialBar`, `scatter`](#chart_type-options)), aggregation with exact boundaries
-([`group_by`](#group_by-options) combined with [`span`](#span-options)), graphs starting at the beginning of a
-day/week/month or ending at the end of one ([`span`](#span-options)), any number of y-axis
-([`yaxis`](#yaxis-options-multi-y-axis)), mapping non-numerical states to numbers
-([`transform`](#transform-option)), simple color thresholds
-([`color_threshold`](#color_threshold-experimental-feature)) and
-[configuration templates](#configuration-templates).
 
 ## Examples
 
