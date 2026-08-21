@@ -164,8 +164,8 @@ The card strictly validates all the options available (but not for the `apex_con
 | :white_check_mark: `entity` | string | | The `entity_id` of the sensor to display |
 | `attribute` | string | | Instead of retrieving the state, it will retrieve an `attribute` of the entity. Make sure you increase `update_delay` if the chart doesn't reflect the last value of the attribute |
 | `name` | string | | Override the name of the entity |
-| `stack_group` | string | | When `stacked` is `true`, groups the different series with the name `stack_group` together. Only works for `type: column`. All series' names need to be be unique because of a bug in apexcharts.js |
-| `color` | string | | Color of the serie. Supported formats: `yellow`, `#aabbcc`, `rgb(128, 128, 128)` or `var(--css-color-variable)` |
+| `stack_group` | string | | When `stacked` is `true`, groups the different series with the name `stack_group` together. Only works for `type: column`. All series' names need to be unique because of a bug in apexcharts.js |
+| `color` | string | | Color of the series. Supported formats: `yellow`, `#aabbcc`, `rgb(128, 128, 128)` or `var(--css-color-variable)` |
 | `opacity` | number | `0.7` for `area`<br/>else `1` | The opacity of the line or filled area, between `0` and `1` |
 | `stroke_width` | number | `5` | Change the width of the line. Only works for `area` and `line` |
 | `stroke_dash` | number or array | `0` | Creates a dashed line. The higher the number, the bigger the dash. An array can be used to specify more complex patterns. |
@@ -186,7 +186,7 @@ The card strictly validates all the options available (but not for the `apex_con
 | `max` | number | `100` | Only used when `chart_type = radialBar`, see [chart_type](#chart_type-options). Used to convert the value into a percentage. Maximum value of the sensor |
 | `color_threshold` | object | | See [experimental](#experimental-features) |
 | `yaxis_id` | string | | The identification name of the y-axis to which this series should be associated. See [yaxis](#yaxis-options-multi-y-axis) |
-| `show` | object | | See [serie's show options](#series-show-options) |
+| `show` | object | | See [series show options](#series-show-options) |
 | `header_actions` | object | | See [header_actions](#header_actions-or-title_actions-options) |
 
 ### series' `show` Options
@@ -274,7 +274,7 @@ series:
 
 | Name | Type | Default | Description |
 | ---- | :--: | :-----: | ----------- |
-| `type` | string | `mean` | Type of long term statistic to pull. Can be one of `min`, `max`, `mean`, `sum` `state` or `change` |
+| `type` | string | `mean` | Type of long term statistic to pull. Can be one of `min`, `max`, `mean`, `sum`, `state` or `change` |
 | `period` | string | `hour` | Period of statistics to pull. Can be one of `5minute`, `hour`, `day`, `week` or `month` |
 | `align` | string | `middle` | Align the data points to the `start`, `end` or `middle` of the period of the statistics |
 
