@@ -90,7 +90,7 @@ This card is available in [HACS](https://hacs.xyz/) (Home Assistant Community St
 2. Grab `apexcharts-card.js`:
 
 ```
-$ wget https://github.com/dewi-ny-je/apexcharts-card/releases/download/v2.4.2/apexcharts-card.js
+$ wget https://github.com/dewi-ny-je/apexcharts-card/releases/download/v2.5.2/apexcharts-card.js
 ```
 
 3. Add the resource reference as described below.
@@ -122,7 +122,7 @@ This diagram shows how your data goes through all the steps allowed by this card
 
 ### Main Options
 
-:warning: Since this card is in its debut, you should expect breaking changes moving forward. :warning:
+The card follows [semantic versioning](https://semver.org): breaking changes bump the major version and are listed in the [changelog](CHANGELOG.md) and in the release notes.
 
 The card strictly validates all the options available (but not for the `apex_config` object). If there is an error in your configuration, it will tell you where and display a red error card.
 
@@ -151,7 +151,7 @@ The card strictly validates all the options available (but not for the `apex_con
 | `now` | object | | v1.5.0 | See [now](#now-options) |
 | ~~`y_axis_precision`~~ | ~~number~~ | ~~`1`~~ | ~~v1.2.0~~ | **DEPRECATED since v1.10.0** ~~The float precision used to display numbers on the Y axis. Only works if `yaxis` is undefined.~~ |
 | `yaxis` | array | | v1.9.0 | See [yaxis](#yaxis-options-multi-y-axis) |
-| `apex_config`| object | | v1.0.0 | Apexcharts API 1:1 mapping. You can see all the options [here](https://apexcharts.com/docs/installation/) --> `Options (Reference)` in the Menu. See [Apex Charts](#apex-charts-options-example) |
+| `apex_config`| object | | v1.0.0 | ApexCharts API 1:1 mapping. All the options are described in ApexCharts' [`Options (Reference)`](https://apexcharts.com/docs/options/). See [Apex Charts](#apex-charts-options-example) |
 | `experimental` | object | | v1.6.0 | See [experimental](#experimental-features) |
 | `locale` | string | | v1.7.0 | Default is to inherit from Home-Assistant's user configuration. This overrides it and forces the locale. Eg: `en`, or `fr`. Reverts to `en` if the locale is unknown. |
 | `brush` | object | | v1.8.0 | See [brush](#brush-experimental-feature) |
@@ -170,8 +170,8 @@ The card strictly validates all the options available (but not for the `apex_con
 | `opacity` | number | `0.7` for `area`<br/>else `1` | v1.6.0 | The opacity of the line or filled area, between `0` and `1` |
 | `stroke_width` | number | `5` | v1.6.0 | Change the width of the line. Only works for `area` and `line` |
 | `stroke_dash` | number or array | `0` | v2.1.0 | Creates a dashed line. The higher the number, the bigger the dash. An array can be used to specify more complex patterns. |
-| `type` | string | `line` | v1.0.0 | `line`, `area` or `column` are supported for now |
-| `curve` | string | `smooth` | v1.0.0 | `smooth` (nice curve),  `straight` (direct line between points) or `stepline` (flat line until next point then straight up or down), `monotoneCubic` (create a monotone cubic spline) |
+| `type` | string | `line` | v1.0.0 | `line`, `area` or `column`. Only taken into account when `chart_type` is left undefined, see [chart_type](#chart_type-options) |
+| `curve` | string | `smooth` | v1.0.0 | `smooth` (nice curve), `straight` (direct line between points), `stepline` (flat line until next point then straight up or down) or `monotoneCubic` (monotone cubic spline). Maps to ApexCharts' [`stroke.curve`](https://apexcharts.com/docs/options/stroke/) |
 | ~~`extend_to_end`~~ | ~~boolean~~ | ~~`true`~~ | ~~v1.0.0~~ | **DEPRECATED since v2.0.0** ~~If the last data is older than the end time displayed on the graph, setting to true will extend the value until the end of the timeline. Only works for `line` and `area` types.~~ |
 | `extend_to` | boolean or string | `end` | v2.0.0 | If the value is `end`, it will extend the line/area to the end of the chart. With `now`, it will extend it to the current time (useful for chart showing current and future data). If `false` it will not do anything. Only available for `line` and `area` types. |
 | `unit` | string | | v1.0.0 | Override the unit of the sensor |
@@ -294,8 +294,8 @@ series:
 | ---- | :--: | :-----: | :---: | ----------- |
 | `show` | boolean | `false` | v1.0.0 | Show or hide the header |
 | `title` | string | | v1.1.0 | The title of the chart you want to display |
-| `title_actions` | object | v2.0.0 | Actions to perform while tapping the title of the chart. See [title_actions](#header_actions-or-title_actions-options) |
-| `floating` | boolean | `false` | v1.0.0 | Makes the header float above the graph. Positionning will be supported later |
+| `title_actions` | object | | v2.0.0 | Actions to perform while tapping the title of the chart. See [title_actions](#header_actions-or-title_actions-options) |
+| `floating` | boolean | `false` | v1.0.0 | Makes the header float above the graph |
 | `show_states` | boolean | `false` | v1.1.0 | Show or hide the states in the header |
 | `colorize_states` | boolean | `false` | v1.1.0 | Colorize the states based on the color of the series |
 | `standard_format` | boolean | `false` | v1.8.0 | Display the title using the standard Home-Assistant card format |
@@ -339,15 +339,28 @@ The position of the marker will only update when the card updates (state change 
 
 ### `chart_type` Options
 
+`chart_type` is validated strictly: these are the only values the card accepts.
+
 | Name | Since | Description |
 | ---- | :---: | ----------- |
-| `line` | v1.0.0 | This is the default and will show a timeline. It is compatible with `series.type` = `column`, `line` and `area` |
+| `line` | v1.0.0 | This is the default and will show a timeline. It is compatible with `series.type` = `column`, `line` and `area` (see the note below) |
 | `scatter` | v1.4.0 | Displays a cloud of points without a line between the values |
 | `pie` | v1.4.0 | This will display a pie chart with the last value computed for each sensor |
 | `donut` | v1.4.0 | This will display a donut chart with the last value computed of each sensor, the same as pie but with a hole in the center |
 | `radialBar` | v1.4.0 | This will display a radial bar chart with the last value computed for each sensor. The value is represented in percentage only. It is required to provide `min` and `max` for each series displayed as it requires converting the value into a percentage. The default value for `min` is `0` and for `max` it is `100`. This graph works well if you want to display sensors natively in percentages |
 
 ![Charts Type](docs/charts_type.png)
+
+:warning: `line` is the default, but leaving `chart_type` out is not the same as setting it to `line`: as soon as
+`chart_type` is defined, the per-series [`type`](#series-options) is ignored and every series is drawn with the chart
+type. Omit `chart_type` if you want to mix `line`, `area` and `column` series in the same chart.
+
+ApexCharts.js itself renders many more chart types than the five above (`bar`, `radar`, `heatmap`, `treemap`,
+`candlestick`, `boxPlot`, `polarArea`, `rangeBar`, `rangeArea`, `bubble`, `funnel`, `sunburst`, ... — the complete and
+up-to-date list is documented at [ApexCharts' Chart Types](https://apexcharts.com/docs/chart-types/)). This card does
+not expose them: they need data shapes and options this card doesn't build. `chart_type` rejects them, and while
+`apex_config` is merged last and could force `chart.type` to something else, the rest of the card (history retrieval,
+axes, tooltip, legend and header) assumes one of the types listed above, so the result is unsupported.
 
 ### `span` Options
 
@@ -604,7 +617,7 @@ You can have as many y-axis as there are series defined in your configuration or
 
 ### Apex Charts Options Example
 
-This is how you could change some options from ApexCharts as described on the [`Options (Reference)` menu entry](https://apexcharts.com/docs/installation/).
+This is how you could change some options from ApexCharts as described in the [`Options (Reference)`](https://apexcharts.com/docs/options/) section of their documentation.
 
 Hundreds of options are available and it is not possible to describe them all here so check over there and ask on the [forum](https://community.home-assistant.io/t/apexcharts-card-a-highly-customizable-graph-card/272877) if you need help with using them.
 
@@ -952,23 +965,26 @@ series:
 
 ## Known issues
 
-* Sometimes, if `smoothing` is used alongside `area` and there is missing data in the chart, the background will be glitchy. See [apexcharts.js/#2180](https://github.com/apexcharts/apexcharts.js/issues/2180)
-* `binary_sensor` is not yet supported.
-* Bars will span left and right of the data point. Not so great if you use `func` to aggregate your data. See [apexcharts.js/#1688](https://github.com/apexcharts/apexcharts.js/issues/1688)
+* Only numerical states are plotted. Non-numerical states (`binary_sensor`, `climate` modes, ...) end up as `null` unless
+  you map them to numbers yourself with [`transform`](#transform-option), eg. `return x === 'on' ? 1 : 0;`
+* Bars are centred on their data point, ie. they span left and right of it. Not so great if you use `func` to aggregate
+  your data, since a bucket is drawn half before and half after the timestamp it belongs to. This is how ApexCharts
+  draws a `column` series on a datetime axis, and there is no alignment option to change it
+  (see [apexcharts.js/#1688](https://github.com/apexcharts/apexcharts.js/issues/1688), closed without one).
 
 ## Roadmap
 
-Not ordered by priority:
+* [ ] Support for logarithmic y-axis
+* [ ] Support for more of the [chart types](https://apexcharts.com/docs/chart-types/) offered by ApexCharts.js
 
-* [X] ~~Support more types of charts (pie, radial, polar area at least)~~
-* [X] ~~Support for `binary_sensors`~~
-* [X] ~~Support for aggregating data with exact boundaries (ex: aggregating data with `1h` could aggregate from `2:00:00am` to `2:59:59am` then `3:00:00am` to `3:59:59` exactly, etc...)~~
-* [X] ~~Display the graph from the start of the day, week, month, ... with support for "up to now" or until the "end of the period"~~
-* [ ] Support for any number of Y-axis
-* [ ] Support for logarithmic
-* [X] ~~Support for state mapping for non-numerical state sensors~~
-* [X] ~~Support for simple color threshold (easier to understand/write than the ones provided natively by ApexCharts)~~
-* [X] ~~Support for graph configuration templates à la [`button-card`](https://github.com/custom-cards/button-card/blob/master/README.md#configuration-templates)~~
+Everything else which used to be listed here has shipped: more chart types
+([`pie`, `donut`, `radialBar`, `scatter`](#chart_type-options)), aggregation with exact boundaries
+([`group_by`](#group_by-options) combined with [`span`](#span-options)), graphs starting at the beginning of a
+day/week/month or ending at the end of one ([`span`](#span-options)), any number of y-axis
+([`yaxis`](#yaxis-options-multi-y-axis)), mapping non-numerical states to numbers
+([`transform`](#transform-option)), simple color thresholds
+([`color_threshold`](#color_threshold-experimental-feature)) and
+[configuration templates](#configuration-templates).
 
 ## Examples
 
