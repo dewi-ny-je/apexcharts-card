@@ -143,6 +143,10 @@ module.exports = {
     [
       '@semantic-release/exec',
       {
+        // `verifyRelease` runs in dry runs too, which is how the pre-release
+        // job of the release workflow learns the version it has to tag.
+        verifyReleaseCmd:
+          'if [ -n "$GITHUB_OUTPUT" ]; then { echo "new_release_published=true"; echo "new_release_version=${nextRelease.version}"; } >> "$GITHUB_OUTPUT"; fi',
         prepareCmd: './scripts/update_readme.sh "${nextRelease.version}" "$GITHUB_REF"',
       },
     ],

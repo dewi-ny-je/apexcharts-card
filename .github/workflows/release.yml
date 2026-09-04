@@ -1,6 +1,12 @@
 name: Release
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      pre_release:
+        description: 'Publish a pre-release for testing (tagged v<next version>-pre) instead of a release'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -17,8 +23,8 @@ jobs:
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/dev'
 
     outputs:
-      new_release_published: ${{ steps.semantic.outputs.new_release_published }}
-      new_release_version: ${{ steps.semantic.outputs.new_release_version }}
+      new_release_published: ${{ steps.semantic.outputs.new_release_published || steps.pre_release_version.outputs.new_release_published }}
+      new_release_version: ${{ steps.semantic.outputs.new_release_version || steps.pre_release_version.outputs.new_release_version }}
 
     steps:
       - uses: actions/checkout@v5
@@ -37,6 +43,48 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Release
+        id: semantic
+        if: ${{ !inputs.pre_release }}
         run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # A pre-release is a throw-away build of what the next release would be,
+      # so semantic-release only computes the version here: a dry run leaves
+      # the changelog, the version bump commit and the release tag untouched,
+      # and the pre-release is published below under its own `-pre` tag.
+      - name: Resolve the pre-release version
+        id: pre_release_version
+        if: ${{ inputs.pre_release }}
+        run: npx semantic-release --dry-run
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build the pre-release bundle
+        if: ${{ inputs.pre_release && steps.pre_release_version.outputs.new_release_published == 'true' }}
+        env:
+          VERSION: ${{ steps.pre_release_version.outputs.new_release_version }}
+        run: |
+          # The card reports the version from package.json, so the bundle has
+          # to say which build it is. Nothing is committed: the checkout is
+          # discarded with the runner.
+          npm pkg set version="${VERSION}-pre"
+          npm run build
+      - name: Publish the pre-release
+        if: ${{ inputs.pre_release && steps.pre_release_version.outputs.new_release_published == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: v${{ steps.pre_release_version.outputs.new_release_version }}-pre
+        run: |
+          # Only one pre-release exists per upcoming version: re-running the
+          # workflow replaces it, tag included, with a build of the current
+          # commit. `git push --delete` covers a tag left without a release.
+          if gh release view "${TAG}" > /dev/null 2>&1; then
+            gh release delete "${TAG}" --cleanup-tag --yes
+          fi
+          git push --delete origin "refs/tags/${TAG}" || true
+          gh release create "${TAG}" \
+            --target "${GITHUB_SHA}" \
+            --title "${TAG}" \
+            --prerelease \
+            --generate-notes \
+            dist/apexcharts-card.js
