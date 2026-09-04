@@ -25,9 +25,16 @@ export const stylesApex: CSSResultGroup = css`
   #graph-wrapper {
     height: 100%;
     grid-area: graph;
+    /* Grid items default to min-width: auto, so they refuse to shrink below
+       their content. ApexCharts sizes its canvas in pixels from the width it
+       measured, so without this the track ratchets: once the chart has been
+       laid out at a wider width (a wider column, an open sidebar, the
+       edit-mode preview) the wrapper keeps that width for good, the chart's
+       ResizeObserver never sees a shrink, and the overflow: hidden on ha-card
+       simply clips the right-hand part of the plot. */
+    min-width: 0;
   }
   ha-card.section #graph-wrapper {
-    min-width: 0;
     min-height: 0;
   }
 
