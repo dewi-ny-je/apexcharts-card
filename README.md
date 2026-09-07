@@ -537,8 +537,8 @@ You can have as many y-axis as there are series defined in your configuration or
 |`id` | string | | **Required** if you define multiple yaxis. The identification name of the y-axis used to map it to a series. Needs to be unique. |
 | `show` | boolean | `true` | Whether to show or not the axis on the chart |
 | `opposite` | boolean | `false` | If `true`, the axis will be shown on the right side of the chart |
-| `min` | `auto`, number or string | `auto` | If undefined or `auto`, the `min` of the y-axis will be automatically calculated based on the min value of all the series associated with this axis. See [below](#minmax-format) for other formats. |
-| `max` | `auto`, number or string | `auto` | If undefined or `auto`, the `min` of the y-axis will be automatically calculated based on the max value of all the series associated with this axis. See [below](#minmax-format) for other formats. |
+| `min` | `auto`, number or string | `auto` | If undefined or `auto`, the `min` of the y-axis is left to ApexCharts, which calculates it from all the series associated with this axis. See [below](#minmax-format) for other formats. |
+| `max` | `auto`, number or string | `auto` | If undefined or `auto`, the `max` of the y-axis is left to ApexCharts, which calculates it from all the series associated with this axis. See [below](#minmax-format) for other formats. |
 | `decimals` | number | `1` | Number of decimals to show on this y-axis |
 | `apex_config` | object | | Any configuration from https://apexcharts.com/docs/options/yaxis/, except `min`, `max`, `show` and `opposite` |
 | `align_to` | number | | Aligns the yaxis extremas to the closest multiple of `align_to`. Only valid if `min` or `max` are not fixed values. |
@@ -546,14 +546,34 @@ You can have as many y-axis as there are series defined in your configuration or
 #### Min/Max Format
 
 `min` and `max` support multiple types of format:
-* not set or `auto` (this is the default): if it is set to `auto`, the min or max will be automatically calculated
+* not set or `auto` (this is the default): the min or max is calculated by ApexCharts from the data
 * any number: if a number is set, the min or max will be fixed on the y-axis
 * `~90`: if the format is `~` followed by a number, the min or max will be defined as a soft bounds
   * `min: ~90` and the min of the data in the series is `120`: the y-axis min value will be `90`
-  * `min: ~90` and the min of the data in the series is `60`: the y-axis min value will be `60`
+  * `min: ~90` and the min of the data in the series is `60`: the bound doesn't apply and the y-axis min is calculated by ApexCharts, which fits the data (`60` or below, depending on its scaling options)
 * `'|+20|'` or `'|-20|'`: This will add/remove the value between `| |` from the min/max
   * `min: '|-20|'`: The min of the data in the series is `32`, then the y-axis min will be `12` (= `32 - 20`)
   * `max: '|+10|'`: The max of the data in the series is `32`, then the y-axis max will be `42` (= `32 + 10`)
+
+A bound is only sent to ApexCharts when you actually asked for one, so that ApexCharts
+keeps computing the ones you didn't and its own scaling options
+([`forceNiceScale`](https://apexcharts.com/docs/options/yaxis/), `tickAmount`,
+`stepSize`, ...) can shape the axis:
+* a fixed bound is always sent
+* `|+20|` is always sent, as it is defined relative to the data
+* a soft bound (`~90`) is sent only when the data doesn't reach it, which is when it applies
+* `auto` is never sent, unless `align_to` is used or the axis is one of several y-axes
+  and has more than one series: ApexCharts maps series to y-axes one by one in that
+  case, so the card has to compute and share the extremas of the axis itself, and its
+  nice scaling options have no effect on it
+
+```yaml
+yaxis:
+  - min: ~0            # soft bound: ignored as soon as the data goes below 0
+    decimals: 2
+    apex_config:
+      forceNiceScale: true    # ApexCharts rounds the extremas it computes
+```
 
 #### Examples
 
