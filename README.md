@@ -7,7 +7,11 @@
 
 # ApexCharts Card by [@RomRider](https://github.com/RomRider) <!-- omit in toc -->
 
-Further maintained by [@dewi-ny-je](https://github.com/dewi-ny-je)
+## Further maintained by [@dewi-ny-je](https://github.com/dewi-ny-je)
+
+This fork contains an updated ApexCharts.js (the latest one) and several fixes. 
+
+As far as I remember **no loss of functionality or breaking changes** result from using this fork over RomRider's.
 
 ![Header](https://github.com/dewi-ny-je/apexcharts-card/raw/master/docs/Header.png)
 
