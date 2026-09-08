@@ -1,3 +1,9 @@
+## [2.7.0](https://github.com/dewi-ny-je/apexcharts-card/compare/v2.6.0...v2.7.0) (2026-09-08)
+
+### Features
+
+* **ci:** let the release workflow force a release type ([beb9e59](https://github.com/dewi-ny-je/apexcharts-card/commit/beb9e596235ec67d634757ab061553c8a9674dd1))
+
 ## [2.6.0](https://github.com/dewi-ny-je/apexcharts-card/compare/v2.5.2...v2.6.0) (2026-09-08)
 
 ### Features
