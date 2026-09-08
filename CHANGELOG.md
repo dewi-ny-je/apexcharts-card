@@ -16,24 +16,6 @@
 * drop the version references left in the option tables ([bc98f79](https://github.com/dewi-ny-je/apexcharts-card/commit/bc98f797e57b29c0f1b445d54276f2d090472cf0))
 * refresh the README against the card and ApexCharts 6.10 ([edb8374](https://github.com/dewi-ny-je/apexcharts-card/commit/edb8374b993192e141c2e9c0444673bcb4f33428))
 
-## [2.6.0](https://github.com/dewi-ny-je/apexcharts-card/compare/v2.5.2...v2.6.0) (2026-09-08)
-
-### Features
-
-* **ci:** publish pre-releases from the release workflow ([32ae0cc](https://github.com/dewi-ny-je/apexcharts-card/commit/32ae0cc277a6218c6a92b5f7e1ee8d0e713eda10))
-
-### Bug Fixes
-
-* let the chart shrink when the card gets narrower ([64bb04c](https://github.com/dewi-ny-je/apexcharts-card/commit/64bb04cd9e8f9d73efe64bd3e380391f37abdd2e))
-* **yaxis:** let ApexCharts scale the axis so forceNiceScale works ([064fd44](https://github.com/dewi-ny-je/apexcharts-card/commit/064fd44e101c746f7b170591fbd19ac1c6591fca))
-
-### Documentation
-
-* address the review feedback on the README refresh ([5000d86](https://github.com/dewi-ny-je/apexcharts-card/commit/5000d86f6820e0d4196ff4ff0b132e770af935e6))
-* drop the "Since" column from the option tables ([3051bb0](https://github.com/dewi-ny-je/apexcharts-card/commit/3051bb03c8ac09adfab46ef3296fc3924aaa13ea))
-* drop the version references left in the option tables ([bc98f79](https://github.com/dewi-ny-je/apexcharts-card/commit/bc98f797e57b29c0f1b445d54276f2d090472cf0))
-* refresh the README against the card and ApexCharts 6.10 ([edb8374](https://github.com/dewi-ny-je/apexcharts-card/commit/edb8374b993192e141c2e9c0444673bcb4f33428))
-
 ## [2.5.2](https://github.com/dewi-ny-je/apexcharts-card/compare/v2.5.1...v2.5.2) (2026-08-18)
 
 ### Bug Fixes
