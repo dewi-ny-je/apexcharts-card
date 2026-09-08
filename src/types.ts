@@ -89,6 +89,12 @@ export type HistoryBuckets = Array<HistoryBucket>;
 
 export interface ChartCardYAxis extends ChartCardYAxisExternal {
   series_id?: number[];
+  /**
+   * Indices, in the generated ApexCharts `yaxis` array, of the axes this y-axis is
+   * rendered as: a single one when ApexCharts scales it itself, one per series of the
+   * y-axis when the card has to keep several hidden axes in sync.
+   */
+  apex_yaxis_ids?: number[];
   min_type?: minmax_type;
   max_type?: minmax_type;
 }

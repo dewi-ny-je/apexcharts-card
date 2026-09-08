@@ -522,19 +522,15 @@ class ChartsCard extends LitElement {
     if (!config.yaxis) return undefined;
     const burned: boolean[] = [];
     this._yAxisConfig = JSON.parse(JSON.stringify(config.yaxis));
-    const yaxisConfig: ApexYAxis[] = config.series_in_graph.map((serie, serieIndex) => {
-      let idx = -1;
-      if (config.yaxis?.length !== 1) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        idx = config.yaxis!.findIndex((yaxis) => {
-          return yaxis.id === serie.yaxis_id;
-        });
-      } else {
-        idx = 0;
-      }
-      if (idx < 0) {
-        throw new Error(`yaxis_id: ${serie.yaxis_id} doesn't exist.`);
-      }
+    // With a single y-axis, a single ApexCharts axis is generated: ApexCharts attaches
+    // every series to it and computes its extremas over all of them, which is what lets
+    // its own scaling options (`forceNiceScale`, `tickAmount`, ...) shape the axis.
+    // With multiple y-axes, ApexCharts maps series to axes by index, so one axis per
+    // series has to be generated, the extra ones being hidden.
+    const singleAxis = config.yaxis.length === 1;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const generateAxis = (idx: number): any => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-explicit-any
       let yAxisDup: any = JSON.parse(JSON.stringify(config.yaxis![idx]));
       delete yAxisDup.apex_config;
@@ -542,12 +538,6 @@ class ChartsCard extends LitElement {
       yAxisDup.decimalsInFloat =
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         config.yaxis![idx].decimals === undefined ? DEFAULT_FLOAT_PRECISION : config.yaxis![idx].decimals;
-      if (this._yAxisConfig?.[idx].series_id) {
-        this._yAxisConfig?.[idx].series_id?.push(serieIndex);
-      } else {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this._yAxisConfig![idx].series_id! = [serieIndex];
-      }
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       if (config.yaxis![idx].apex_config) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -564,7 +554,42 @@ class ChartsCard extends LitElement {
         burned[idx] = true;
       }
       return yAxisDup;
+    };
+
+    const yaxisConfig: ApexYAxis[] = [];
+    config.series_in_graph.forEach((serie, serieIndex) => {
+      let idx = 0;
+      if (!singleAxis) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        idx = config.yaxis!.findIndex((yaxis) => {
+          return yaxis.id === serie.yaxis_id;
+        });
+      }
+      if (idx < 0) {
+        throw new Error(`yaxis_id: ${serie.yaxis_id} doesn't exist.`);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const yAxis = this._yAxisConfig![idx];
+      if (yAxis.series_id) {
+        yAxis.series_id.push(serieIndex);
+      } else {
+        yAxis.series_id = [serieIndex];
+      }
+      if (singleAxis) return;
+      // ApexCharts maps series[n] to yaxis[n], so this axis is pushed at the index of
+      // the series it belongs to.
+      if (yAxis.apex_yaxis_ids) {
+        yAxis.apex_yaxis_ids.push(yaxisConfig.length);
+      } else {
+        yAxis.apex_yaxis_ids = [yaxisConfig.length];
+      }
+      yaxisConfig.push(generateAxis(idx));
     });
+    if (singleAxis) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this._yAxisConfig![0].apex_yaxis_ids = [0];
+      yaxisConfig.push(generateAxis(0));
+    }
     return yaxisConfig;
   }
 
@@ -1224,7 +1249,22 @@ class ChartsCard extends LitElement {
   private _computeYAxisAutoMinMax(start: Date, end: Date) {
     if (!this._config) return;
     this._yAxisConfig?.map((yaxis) => {
-      if (yaxis.min_type !== minmax_type.FIXED || yaxis.max_type !== minmax_type.FIXED) {
+      // ApexCharts computes the extremas of an axis over the series attached to it. It
+      // can only be left to do so when that set of series is the one of this y-axis,
+      // which is the case when a single ApexCharts axis was generated for it (see
+      // `_generateYAxisConfig()`). Otherwise this y-axis is spread over one hidden
+      // ApexCharts axis per series and only the card knows they belong together, so
+      // the bounds have to be computed here and pushed to all of them.
+      const mustComputeBounds = yaxis.apex_yaxis_ids !== undefined && yaxis.apex_yaxis_ids.length > 1;
+      // A bound only has to be computed from the data when the user asked for
+      // something: a fixed bound is already in the config and a bound left to `auto`
+      // is ApexCharts' business, unless `align_to` requires it to be snapped.
+      const needsComputation = (type: minmax_type | undefined): boolean =>
+        type !== minmax_type.FIXED &&
+        (type !== minmax_type.AUTO || yaxis.align_to !== undefined || mustComputeBounds);
+      const computeMin = needsComputation(yaxis.min_type);
+      const computeMax = needsComputation(yaxis.max_type);
+      if (computeMin || computeMax) {
         const minMax = yaxis.series_id?.map((id) => {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const lMinMax = this._graphs![id]?.minMaxWithTimestampForYAxis(
@@ -1276,26 +1316,50 @@ class ChartsCard extends LitElement {
             }
           }
         }
-        yaxis.series_id?.forEach((id) => {
-          if (min !== null && yaxis.min_type !== minmax_type.FIXED) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this._config!.apex_config!.yaxis![id].min = this._getMinMaxBasedOnType(
-              true,
-              min,
-              yaxis.min as number,
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              yaxis.min_type!,
-            );
+        const boundRequired = yaxis.align_to !== undefined || mustComputeBounds;
+        yaxis.apex_yaxis_ids?.forEach((id) => {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const apexYAxis = this._config!.apex_config!.yaxis![id];
+          if (computeMin) {
+            const computedMin =
+              min === null
+                ? undefined
+                : this._getMinMaxBasedOnType(
+                    true,
+                    min,
+                    yaxis.min as number,
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    yaxis.min_type!,
+                    boundRequired,
+                  );
+            // Leaving `min` out of the config is what lets ApexCharts compute the
+            // extrema itself, and options such as `forceNiceScale` only apply to
+            // the bounds it computes. The key is deleted rather than set to
+            // `undefined` so that a bound computed on a previous update doesn't
+            // linger in the config.
+            if (computedMin === undefined) {
+              delete apexYAxis.min;
+            } else {
+              apexYAxis.min = computedMin;
+            }
           }
-          if (max !== null && yaxis.max_type !== minmax_type.FIXED) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this._config!.apex_config!.yaxis![id].max = this._getMinMaxBasedOnType(
-              false,
-              max,
-              yaxis.max as number,
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              yaxis.max_type!,
-            );
+          if (computeMax) {
+            const computedMax =
+              max === null
+                ? undefined
+                : this._getMinMaxBasedOnType(
+                    false,
+                    max,
+                    yaxis.max as number,
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    yaxis.max_type!,
+                    boundRequired,
+                  );
+            if (computedMax === undefined) {
+              delete apexYAxis.max;
+            } else {
+              apexYAxis.max = computedMax;
+            }
           }
         });
       }
@@ -1303,20 +1367,39 @@ class ChartsCard extends LitElement {
     return this._config?.apex_config?.yaxis;
   }
 
-  private _getMinMaxBasedOnType(isMin: boolean, value: number, configMinMax: number, type: minmax_type): number {
+  /**
+   * Returns the bound to hand over to ApexCharts, or `undefined` when nothing has to be
+   * passed on. `undefined` means the bound is left out of the ApexCharts config so that
+   * ApexCharts computes it from the data, which is the only case where its own scaling
+   * options (`forceNiceScale`, `tickAmount`, `stepSize`, ...) are free to shape the
+   * axis: a bound present in the config is honoured verbatim.
+   * `boundRequired` is set when the computed bound has to be passed on anyway, either
+   * because `align_to` asks for a snapped bound or because ApexCharts can't compute the
+   * extremas of this axis itself.
+   */
+  private _getMinMaxBasedOnType(
+    isMin: boolean,
+    value: number,
+    configMinMax: number,
+    type: minmax_type,
+    boundRequired: boolean,
+  ): number | undefined {
     switch (type) {
       case minmax_type.AUTO:
-        return value;
+        return boundRequired ? value : undefined;
       case minmax_type.SOFT:
         if ((isMin && value > configMinMax) || (!isMin && value < configMinMax)) {
+          // The data doesn't reach the soft bound: the bound applies.
           return configMinMax;
         } else {
-          return value;
+          // The data goes past the soft bound, so the bound isn't binding and there is
+          // nothing the user asked for to pass on.
+          return boundRequired ? value : undefined;
         }
       case minmax_type.ABSOLUTE:
         return value + configMinMax;
       default:
-        return value;
+        return boundRequired ? value : undefined;
     }
   }
 
