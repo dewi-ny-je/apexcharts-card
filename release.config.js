@@ -107,6 +107,49 @@ const dedupeCommits = (context) => {
   };
 };
 
+/*
+ * The release workflow can be dispatched with a release type to force, for
+ * commits that would otherwise not produce a release (documentation, chores)
+ * or that deserve a bigger bump than they describe. `FORCE_RELEASE_TYPE`
+ * carries that choice down to here.
+ *
+ * `analyzeCommits` is run for every plugin that defines it and the highest
+ * release type wins, so the forced type is a floor: commits asking for more
+ * than the forced type still get their own bump.
+ */
+const RELEASE_TYPES = ['patch', 'minor', 'major'];
+
+const getForcedReleaseType = (env) => {
+  const forced = String((env || {}).FORCE_RELEASE_TYPE || '')
+    .trim()
+    .toLowerCase();
+
+  // `auto` is what the workflow sends when nothing has to be forced; the
+  // input is also empty when the workflow is dispatched through the API.
+  if (forced === '' || forced === 'auto') {
+    return null;
+  }
+
+  if (!RELEASE_TYPES.includes(forced)) {
+    throw new Error(`FORCE_RELEASE_TYPE must be one of auto, ${RELEASE_TYPES.join(', ')} (got "${forced}")`);
+  }
+
+  return forced;
+};
+
+const forceReleaseType = {
+  // Reported before anything is analysed, and a typo fails the run here
+  // rather than halfway through it.
+  verifyConditions: (pluginConfig, { env, logger }) => {
+    const forced = getForcedReleaseType(env);
+
+    if (forced) {
+      logger.log('Forcing a %s release: the commits alone may not warrant one.', forced);
+    }
+  },
+  analyzeCommits: (pluginConfig, { env }) => getForcedReleaseType(env),
+};
+
 module.exports = {
   plugins: [
     [
@@ -115,6 +158,7 @@ module.exports = {
         preset: 'conventionalcommits',
       },
     ],
+    forceReleaseType,
     [
       '@semantic-release/release-notes-generator',
       {

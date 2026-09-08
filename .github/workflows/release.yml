@@ -3,6 +3,15 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
+      release_type:
+        description: 'Release even when the commits do not warrant one, with at least this bump'
+        type: choice
+        default: auto
+        options:
+          - auto
+          - patch
+          - minor
+          - major
       pre_release:
         description: 'Publish a pre-release for testing (tagged v<next version>-pre) instead of a release'
         type: boolean
@@ -48,6 +57,7 @@ jobs:
         run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORCE_RELEASE_TYPE: ${{ inputs.release_type }}
 
       # A pre-release is a throw-away build of what the next release would be,
       # so semantic-release only computes the version here: a dry run leaves
@@ -59,6 +69,7 @@ jobs:
         run: npx semantic-release --dry-run
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORCE_RELEASE_TYPE: ${{ inputs.release_type }}
       - name: Build the pre-release bundle
         if: ${{ inputs.pre_release && steps.pre_release_version.outputs.new_release_published == 'true' }}
         env:
